@@ -2,15 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#2d5a78">
+<meta name="apple-mobile-web-app-title" content="頭痛ダイアリー">
 
 <title>頭痛ダイアリー</title>
-
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect rx='24' width='128' height='128' fill='%232d5a78'/%3E%3Ctext x='50%25' y='54%25' font-size='72' text-anchor='middle' dominant-baseline='middle'%3E🗓️%3C/text%3E%3C/svg%3E">
 
 <style>
 *{
@@ -19,324 +17,342 @@
   padding:0;
   -webkit-tap-highlight-color:transparent;
 }
+
 body{
-  font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif;
-  background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);
-  min-height:100vh;
-  color:#374151;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+  background:#f4f7fb;
+  color:#222;
 }
-button,input,textarea{
-  font-family:inherit;
+
+header{
+  background:linear-gradient(135deg,#4a7c9e,#2d5a78);
+  color:white;
+  padding:50px 20px 20px;
 }
-#header{
-  background:linear-gradient(135deg,#4a7c9e 0%,#2d5a78 100%);
-  color:#fff;
-  padding:56px 20px 16px;
-}
-#header-sub{
-  font-size:10px;
-  letter-spacing:.15em;
-  opacity:.7;
-}
-#header-title{
+
+header h1{
   font-size:24px;
-  font-weight:900;
-  margin-top:4px;
+  font-weight:800;
 }
-#content{
+
+.tabs{
+  display:flex;
+  margin-top:18px;
+  gap:10px;
+}
+
+.tab{
+  flex:1;
+  border:none;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.2);
+  color:white;
+  font-weight:700;
+}
+
+.tab.active{
+  background:white;
+  color:#2d5a78;
+}
+
+.container{
   padding:16px;
-  max-width:760px;
-  margin:auto;
 }
+
 .card{
-  background:#fff;
+  background:white;
   border-radius:18px;
   padding:16px;
   margin-bottom:16px;
-  box-shadow:0 2px 12px rgba(0,0,0,.06);
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
+
+.section{
+  margin-bottom:24px;
+}
+
 .section-title{
-  font-size:13px;
+  font-size:14px;
   font-weight:800;
   margin-bottom:10px;
-  padding-left:10px;
-  border-left:4px solid #2d5a78;
+  color:#374151;
 }
+
 .intensity-row{
-  margin-bottom:14px;
+  margin-bottom:12px;
 }
+
 .intensity-label{
-  margin-bottom:8px;
   font-size:13px;
-  font-weight:700;
+  margin-bottom:6px;
+  color:#666;
 }
-.intensity-btns{
+
+.intensity-buttons{
   display:flex;
   gap:6px;
 }
+
 .intensity-btn{
   flex:1;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   padding:10px 4px;
-  font-size:12px;
+  font-size:11px;
   font-weight:700;
 }
+
+.level0{background:#e8f5e9;color:#2e7d32;}
+.level1{background:#fff9c4;color:#f9a825;}
+.level2{background:#ffe0b2;color:#ef6c00;}
+.level3{background:#ffcdd2;color:#c62828;}
+
+.selected{
+  outline:3px solid #111;
+}
+
 .chips{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
 }
+
 .chip{
-  border:2px solid #e5e7eb;
-  background:#f9fafb;
+  border:none;
   border-radius:999px;
-  padding:8px 12px;
-  font-size:12px;
+  padding:8px 14px;
+  background:#edf2f7;
+  font-size:13px;
 }
+
 .chip.on{
   background:#dbeafe;
-  border-color:#4a7c9e;
   color:#1d4ed8;
-  font-weight:800;
+  font-weight:700;
 }
+
 textarea{
   width:100%;
-  border:2px solid #e5e7eb;
-  border-radius:14px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
   padding:12px;
+  font-size:14px;
   min-height:100px;
-  margin-top:10px;
 }
-input[type="date"]{
+
+.save-btn{
+  width:100%;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  background:linear-gradient(135deg,#4a7c9e,#2d5a78);
+  color:white;
+  font-size:16px;
+  font-weight:800;
+}
+
+.entry{
+  border-left:5px solid #4a7c9e;
+  padding-left:12px;
+  margin-bottom:18px;
+}
+
+.entry-date{
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.small{
+  font-size:13px;
+  color:#555;
+  margin-bottom:4px;
+}
+
+.hidden{
+  display:none;
+}
+
+.date-input{
+  width:100%;
   border:none;
   font-size:18px;
   font-weight:700;
-  background:transparent;
-}
-#saveBtn{
-  width:100%;
-  border:none;
-  border-radius:16px;
-  padding:16px;
-  background:linear-gradient(135deg,#4a7c9e,#2d5a78);
-  color:#fff;
-  font-size:16px;
-  font-weight:900;
-}
-#saveInfo{
-  margin-top:12px;
-  text-align:center;
-  font-size:13px;
-  color:#16a34a;
-  font-weight:700;
-}
-.summary{
-  margin-top:16px;
-}
-.entry{
-  border-left:5px solid #2d5a78;
-  background:#fff;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-}
-.entry-date{
-  font-weight:900;
-  margin-bottom:6px;
-}
-.small{
-  font-size:13px;
-  margin-top:4px;
-}
-.footer{
-  text-align:center;
-  font-size:11px;
-  color:#9ca3af;
-  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="header">
-  <div id="header-sub">HEADACHE DIARY</div>
-  <div id="header-title">頭痛ダイアリー 🗓️</div>
-</div>
+<header>
+  <h1>頭痛ダイアリー 🗓️</h1>
 
-<div id="content">
-
-  <div class="card">
-    <div class="section-title">日付</div>
-    <input type="date" id="dateInput">
+  <div class="tabs">
+    <button class="tab active" id="recordTab">📝 記録</button>
+    <button class="tab" id="summaryTab">📊 まとめ</button>
   </div>
+</header>
 
-  <div class="card">
-    <div class="section-title">痛みの強さ</div>
+<div class="container">
 
-    <div class="intensity-row">
-      <div class="intensity-label">🌅 朝</div>
-      <div class="intensity-btns" id="morningBtns"></div>
+  <div id="recordPage">
+
+    <div class="card">
+      <input type="date" id="dateInput" class="date-input">
     </div>
 
-    <div class="intensity-row">
-      <div class="intensity-label">☀️ 昼</div>
-      <div class="intensity-btns" id="afternoonBtns"></div>
+    <div class="card">
+
+      <div class="section">
+        <div class="section-title">痛みの程度</div>
+
+        <div class="intensity-row">
+          <div class="intensity-label">朝</div>
+          <div class="intensity-buttons" id="morningButtons"></div>
+        </div>
+
+        <div class="intensity-row">
+          <div class="intensity-label">昼</div>
+          <div class="intensity-buttons" id="afternoonButtons"></div>
+        </div>
+
+        <div class="intensity-row">
+          <div class="intensity-label">夜</div>
+          <div class="intensity-buttons" id="eveningButtons"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">症状</div>
+        <div class="chips" id="symptomChips"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">誘因</div>
+        <div class="chips" id="triggerChips"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">メモ</div>
+        <textarea id="memo"></textarea>
+      </div>
+
+      <button class="save-btn" id="saveBtn">💾 保存する</button>
+
     </div>
+  </div>
 
-    <div class="intensity-row">
-      <div class="intensity-label">🌙 夜</div>
-      <div class="intensity-btns" id="eveningBtns"></div>
+  <div id="summaryPage" class="hidden">
+    <div class="card">
+      <div id="summaryList"></div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">症状</div>
-    <div class="chips" id="symptomChips"></div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">誘因</div>
-    <div class="chips" id="triggerChips"></div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">メモ</div>
-    <textarea id="memo"></textarea>
-  </div>
-
-  <button id="saveBtn">💾 保存する</button>
-  <div id="saveInfo"></div>
-
-  <div class="summary">
-    <div class="section-title">最近の記録</div>
-    <div id="entries"></div>
-  </div>
-
-  <div class="footer">
-    iPhoneのSafariで開いて「ホーム画面に追加」するとアプリっぽく使えます
   </div>
 
 </div>
 
 <script>
-const STORAGE_KEY = "headache_diary_stable_v2";
+const STORAGE_KEY = "headache-diary-final";
 
 const labels = ["なし","軽度","中程度","重度"];
-const colors = ["#dcfce7","#fef9c3","#fed7aa","#fecaca"];
 
 const symptoms = [
   "💓 脈打つ痛み",
   "🤢 吐き気",
   "💡 光過敏",
   "🔊 音過敏",
-  "✨ 前兆あり",
-  "🪨 重い痛み"
+  "✨ 前兆"
 ];
 
 const triggers = [
   "睡眠不足",
   "ストレス",
   "気圧",
-  "画面疲れ",
   "飲酒",
-  "食事抜き"
+  "画面疲れ"
 ];
 
 let entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
 
+let current = {
+  morning:0,
+  afternoon:0,
+  evening:0,
+  symptoms:[],
+  triggers:[],
+  memo:""
+};
+
 const today = new Date().toISOString().slice(0,10);
 document.getElementById("dateInput").value = today;
 
-function createIntensityButtons(containerId, field){
-  const wrap = document.getElementById(containerId);
+function saveStorage(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function createIntensityButtons(id, field){
+  const container = document.getElementById(id);
 
   labels.forEach((label,index)=>{
     const btn = document.createElement("button");
-    btn.className = "intensity-btn";
-    btn.style.background = colors[index];
+
+    btn.className = "intensity-btn level"+index;
+
+    if(current[field] === index){
+      btn.classList.add("selected");
+    }
+
     btn.textContent = label;
 
     btn.onclick = ()=>{
-      wrap.querySelectorAll("button").forEach(b=>{
-        b.style.outline = "none";
-      });
-      btn.style.outline = "3px solid #2d5a78";
-      wrap.dataset.value = index;
+      current[field] = index;
+      renderAll();
     };
 
-    if(index === 0){
-      btn.click();
+    container.appendChild(btn);
+  });
+}
+
+function createChips(id, list, field){
+  const container = document.getElementById(id);
+
+  list.forEach(item=>{
+    const btn = document.createElement("button");
+
+    btn.className = "chip";
+
+    if(current[field].includes(item)){
+      btn.classList.add("on");
     }
 
-    wrap.appendChild(btn);
-  });
-}
+    btn.textContent = item;
 
-createIntensityButtons("morningBtns","morning");
-createIntensityButtons("afternoonBtns","afternoon");
-createIntensityButtons("eveningBtns","evening");
+    btn.onclick = ()=>{
+      if(current[field].includes(item)){
+        current[field] = current[field].filter(v=>v!==item);
+      }else{
+        current[field].push(item);
+      }
 
-function createChips(id,data){
-  const wrap = document.getElementById(id);
-
-  data.forEach(item=>{
-    const chip = document.createElement("button");
-    chip.className = "chip";
-    chip.textContent = item;
-
-    chip.onclick = ()=>{
-      chip.classList.toggle("on");
+      renderAll();
     };
 
-    wrap.appendChild(chip);
+    container.appendChild(btn);
   });
 }
 
-createChips("symptomChips",symptoms);
-createChips("triggerChips",triggers);
-
-function getSelectedChips(id){
-  return [...document.querySelectorAll(`#${id} .chip.on`)].map(c=>c.textContent);
-}
-
-function saveEntry(){
-
-  const date = document.getElementById("dateInput").value;
-
-  entries[date] = {
-    morning:Number(document.getElementById("morningBtns").dataset.value || 0),
-    afternoon:Number(document.getElementById("afternoonBtns").dataset.value || 0),
-    evening:Number(document.getElementById("eveningBtns").dataset.value || 0),
-    symptoms:getSelectedChips("symptomChips"),
-    triggers:getSelectedChips("triggerChips"),
-    memo:document.getElementById("memo").value,
-    savedAt:new Date().toISOString()
-  };
-
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
-
-  document.getElementById("saveInfo").textContent = "✅ 保存しました";
-
-  renderEntries();
-
-  setTimeout(()=>{
-    document.getElementById("saveInfo").textContent = "";
-  },2000);
-}
-
-document.getElementById("saveBtn").onclick = saveEntry;
-
-function renderEntries(){
-
-  const wrap = document.getElementById("entries");
-  wrap.innerHTML = "";
+function renderSummary(){
+  const list = document.getElementById("summaryList");
 
   const dates = Object.keys(entries).sort().reverse();
 
-  dates.forEach(date=>{
+  if(dates.length===0){
+    list.innerHTML = "<div>まだ記録がありません</div>";
+    return;
+  }
 
+  list.innerHTML = "";
+
+  dates.forEach(date=>{
     const e = entries[date];
 
     const div = document.createElement("div");
@@ -344,20 +360,71 @@ function renderEntries(){
 
     div.innerHTML = `
       <div class="entry-date">${date}</div>
-      <div class="small">朝: ${labels[e.morning]} / 昼: ${labels[e.afternoon]} / 夜: ${labels[e.evening]}</div>
-      ${e.symptoms.length ? `<div class="small">症状: ${e.symptoms.join("・")}</div>` : ""}
-      ${e.triggers.length ? `<div class="small">誘因: ${e.triggers.join("・")}</div>` : ""}
-      ${e.memo ? `<div class="small">メモ: ${e.memo}</div>` : ""}
+      <div class="small">朝: ${labels[e.morning]}</div>
+      <div class="small">昼: ${labels[e.afternoon]}</div>
+      <div class="small">夜: ${labels[e.evening]}</div>
+      <div class="small">症状: ${e.symptoms.join("、") || "なし"}</div>
+      <div class="small">誘因: ${e.triggers.join("、") || "なし"}</div>
+      <div class="small">メモ: ${e.memo || "なし"}</div>
     `;
 
-    wrap.appendChild(div);
-
+    list.appendChild(div);
   });
-
 }
 
-renderEntries();
+function renderAll(){
+  document.getElementById("morningButtons").innerHTML = "";
+  document.getElementById("afternoonButtons").innerHTML = "";
+  document.getElementById("eveningButtons").innerHTML = "";
 
+  document.getElementById("symptomChips").innerHTML = "";
+  document.getElementById("triggerChips").innerHTML = "";
+
+  createIntensityButtons("morningButtons","morning");
+  createIntensityButtons("afternoonButtons","afternoon");
+  createIntensityButtons("eveningButtons","evening");
+
+  createChips("symptomChips",symptoms,"symptoms");
+  createChips("triggerChips",triggers,"triggers");
+
+  document.getElementById("memo").value = current.memo;
+
+  renderSummary();
+}
+
+document.getElementById("memo").addEventListener("input",e=>{
+  current.memo = e.target.value;
+});
+
+document.getElementById("saveBtn").onclick = ()=>{
+  const date = document.getElementById("dateInput").value;
+
+  entries[date] = JSON.parse(JSON.stringify(current));
+
+  saveStorage();
+
+  alert("保存しました！");
+};
+
+document.getElementById("recordTab").onclick = ()=>{
+  document.getElementById("recordPage").classList.remove("hidden");
+  document.getElementById("summaryPage").classList.add("hidden");
+
+  document.getElementById("recordTab").classList.add("active");
+  document.getElementById("summaryTab").classList.remove("active");
+};
+
+document.getElementById("summaryTab").onclick = ()=>{
+  document.getElementById("summaryPage").classList.remove("hidden");
+  document.getElementById("recordPage").classList.add("hidden");
+
+  document.getElementById("summaryTab").classList.add("active");
+  document.getElementById("recordTab").classList.remove("active");
+
+  renderSummary();
+};
+
+renderAll();
 </script>
 
 </body>
