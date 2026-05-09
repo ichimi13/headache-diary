@@ -10,696 +10,380 @@
 <meta name="theme-color" content="#2d5a78">
 <title>頭痛ダイアリー</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; }
-body {
-  font-family: -apple-system, "Hiragino Sans", sans-serif;
-  background: #f0f4f8;
-  -webkit-font-smoothing: antialiased;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
-}
-button, textarea, input { font-family: inherit; }
-
-#app-header {
-background: linear-gradient(160deg, #4a7c9e 0%, #2d5a78 100%);
-color: #fff;
-padding-top: calc(env(safe-area-inset-top, 44px) + 10px);
-padding-left: 18px;
-padding-right: 18px;
-padding-bottom: 0;
-position: sticky;
-top: 0;
-z-index: 50;
-}
-.app-label { font-size: 10px; letter-spacing: 0.15em; opacity: 0.65; margin-bottom: 3px; }
-.app-title { font-size: 22px; font-weight: 900; margin-bottom: 14px; }
-.tabs { display: flex; }
-.tab {
-flex: 1; padding: 11px 0; text-align: center;
-background: transparent; border: none;
-color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600;
-border-radius: 10px 10px 0 0; cursor: pointer;
-}
-.tab.on { background: #f0f4f8; color: #2d5a78; font-weight: 800; }
-
-#page { padding: 14px 14px 0; }
-
-.card {
-background: #fff; border-radius: 16px;
-padding: 14px 16px; margin-bottom: 12px;
-box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-}
-
-.sec-title {
-font-size: 12px; font-weight: 800; color: #374151;
-border-left: 3px solid #4a7c9e; padding-left: 8px;
-margin-bottom: 10px; letter-spacing: 0.04em;
-}
-
-/* 痛みの程度 */
-.int-label { font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 5px; }
-.int-row { display: flex; gap: 5px; margin-bottom: 8px; }
-.int-btn {
-flex: 1; padding: 8px 2px; border-radius: 9px;
-border: 2px solid transparent; font-size: 10px;
-font-weight: 500; cursor: pointer;
-}
-
-/* チップ */
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip {
-padding: 6px 11px; border-radius: 18px;
-border: 1.5px solid #d1d5db; background: #f9fafb;
-color: #6b7280; font-size: 12px; cursor: pointer;
-}
-.chip.on { border-color: #4a7c9e; background: #dbeafe; color: #1e3a8a; font-weight: 700; }
-.chip.on-purple { border-color: #7c3aed; background: #ede9fe; color: #4c1d95; font-weight: 700; }
-
-/* 服薬カード */
-.med-card {
-background: #eff6ff; border-radius: 12px;
-padding: 11px 13px; margin-top: 8px;
-border: 1.5px solid #bfdbfe;
-}
-.med-card-top {
-display: flex; justify-content: space-between;
-align-items: center; margin-bottom: 8px;
-}
-.med-card-name { font-size: 13px; font-weight: 800; color: #1e40af; }
-.med-del { background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; padding: 0; }
-.sub-title { font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 5px; }
-.tim-row { display: flex; gap: 5px; margin-bottom: 8px; }
-.tim-btn {
-flex: 1; padding: 7px 3px; border-radius: 9px;
-border: 1.5px solid #d1d5db; background: #fff;
-color: #6b7280; font-size: 11px; cursor: pointer;
-}
-.tim-btn.on { border-color: #4a7c9e; background: #dbeafe; color: #1e3a8a; font-weight: 800; }
-.eff-row { display: flex; gap: 5px; }
-.eff-btn {
-flex: 1; padding: 7px 3px; border-radius: 9px;
-border: 1.5px solid #d1d5db; background: #fff;
-color: #6b7280; font-size: 10px; cursor: pointer; line-height: 1.3;
-}
-
-/* メモ */
-textarea {
-width: 100%; border: 1.5px solid #d1d5db; border-radius: 10px;
-padding: 9px 11px; font-size: 13px; color: #374151;
-resize: none; outline: none; background: #fff;
-}
-
-/* 保存ボタン */
-#btn-save {
-width: 100%; padding: 14px; border-radius: 13px; border: none;
-background: linear-gradient(135deg, #4a7c9e, #2d5a78);
-color: #fff; font-size: 15px; font-weight: 800;
-cursor: pointer; margin-top: 4px;
-}
-
-/* まとめ */
-.cal-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
-.cal-cell {
-width: 33px; height: 33px; border-radius: 7px;
-display: flex; flex-direction: column;
-align-items: center; justify-content: center;
-font-size: 10px; font-weight: 700;
-border: 1px solid rgba(0,0,0,0.06);
-}
-.cal-cell small { font-size: 8px; opacity: 0.7; }
-.legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10px; color: #6b7280; margin-bottom: 16px; }
-.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 3px; vertical-align: middle; }
-.rec-card {
-background: #fff; border-radius: 12px;
-padding: 12px 14px; margin-bottom: 8px;
-border-left: 4px solid #e5e7eb;
-box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-.rec-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.rec-date { font-size: 14px; font-weight: 700; color: #111827; }
-.rec-badge { font-size: 11px; font-weight: 700; border-radius: 7px; padding: 2px 9px; }
-.rec-times { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
-.rec-row { font-size: 11px; color: #374151; margin-bottom: 3px; }
-.rec-memo { font-size: 11px; color: #6b7280; font-style: italic; background: #f9fafb; border-radius: 7px; padding: 5px 8px; margin-top: 3px; }
-
-#btn-export {
-width: 100%; padding: 13px; border-radius: 13px;
-border: 2px solid #4a7c9e; background: #fff;
-color: #4a7c9e; font-size: 14px; font-weight: 700;
-cursor: pointer; margin-bottom: 12px;
-}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,"Hiragino Sans",sans-serif;background:#eef2f7;-webkit-font-smoothing:antialiased;padding-bottom:30px}
+button,input,textarea{font-family:inherit}
+#hdr{background:linear-gradient(160deg,#4a7c9e,#2d5a78);color:#fff;padding:54px 16px 0;position:sticky;top:0;z-index:99}
+.hdr-sub{font-size:10px;letter-spacing:.14em;opacity:.6;margin-bottom:2px}
+.hdr-ttl{font-size:21px;font-weight:900;margin-bottom:13px}
+.tabs{display:flex}
+.tab{flex:1;padding:11px 0;background:transparent;border:none;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;border-radius:10px 10px 0 0;cursor:pointer}
+.tab.on{background:#eef2f7;color:#2d5a78;font-weight:800}
+#pg{padding:14px}
+.card{background:#fff;border-radius:16px;padding:14px 15px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.09)}
+.stitle{font-size:12px;font-weight:800;color:#374151;border-left:3px solid #4a7c9e;padding-left:8px;margin-bottom:10px}
+.ilbl{font-size:11px;color:#6b7280;font-weight:600;margin-bottom:4px}
+.irow{display:flex;gap:5px;margin-bottom:8px}
+.ibtn{flex:1;padding:8px 2px;border-radius:9px;border:2px solid transparent;font-size:10px;font-weight:500;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 11px;border-radius:18px;border:1.5px solid #d1d5db;background:#f9fafb;color:#6b7280;font-size:12px;cursor:pointer}
+.chip.on{border-color:#4a7c9e;background:#dbeafe;color:#1e3a8a;font-weight:700}
+.chip.onp{border-color:#7c3aed;background:#ede9fe;color:#4c1d95;font-weight:700}
+.mcard{background:#eff6ff;border-radius:12px;padding:11px 13px;margin-top:8px;border:1.5px solid #bfdbfe}
+.mcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mcard-name{font-size:13px;font-weight:800;color:#1e40af}
+.mdel{background:none;border:none;color:#9ca3af;font-size:22px;cursor:pointer;padding:0}
+.slbl{font-size:11px;color:#6b7280;font-weight:600;margin-bottom:5px}
+.trow{display:flex;gap:5px;margin-bottom:8px}
+.tbtn{flex:1;padding:7px 3px;border-radius:9px;border:1.5px solid #d1d5db;background:#fff;color:#6b7280;font-size:11px;cursor:pointer}
+.tbtn.on{border-color:#4a7c9e;background:#dbeafe;color:#1e3a8a;font-weight:800}
+.erow{display:flex;gap:5px}
+.ebtn{flex:1;padding:7px 3px;border-radius:9px;border:1.5px solid #d1d5db;background:#fff;color:#6b7280;font-size:10px;cursor:pointer;line-height:1.3}
+textarea{width:100%;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 11px;font-size:13px;color:#374151;resize:none;outline:none}
+#sbtn{width:100%;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,#4a7c9e,#2d5a78);color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:2px}
+#ebtn{width:100%;padding:13px;border-radius:13px;border:2px solid #4a7c9e;background:#fff;color:#4a7c9e;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px}
+.cgrid{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.ccell{width:33px;height:33px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:1px solid rgba(0,0,0,.06)}
+.ccell small{font-size:8px;opacity:.7}
+.lgd{display:flex;flex-wrap:wrap;gap:8px;font-size:10px;color:#6b7280;margin-bottom:14px}
+.ldot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:2px;vertical-align:middle;border:1px solid rgba(0,0,0,.1)}
+.rcard{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;border-left:4px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.rtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rdate{font-size:14px;font-weight:700;color:#111827}
+.rbadge{font-size:11px;font-weight:700;border-radius:7px;padding:2px 9px}
+.rtimes{font-size:11px;color:#6b7280;margin-bottom:4px}
+.rrow{font-size:11px;color:#374151;margin-bottom:3px}
+.rmemo{font-size:11px;color:#6b7280;font-style:italic;background:#f9fafb;border-radius:7px;padding:5px 8px;margin-top:3px}
 </style>
-
 </head>
 <body>
-
-<div id="app-header">
-  <div class="app-label">HEADACHE DIARY</div>
-  <div class="app-title">頭痛ダイアリー 🗓</div>
+<div id="hdr">
+  <div class="hdr-sub">HEADACHE DIARY</div>
+  <div class="hdr-ttl">頭痛ダイアリー</div>
   <div class="tabs">
-    <button class="tab on" id="tab-record" onclick="switchTab('record')">📝 記録する</button>
-    <button class="tab" id="tab-summary" onclick="switchTab('summary')">📊 まとめ</button>
+    <button class="tab on" id="t0" onclick="goTab(0)">記録する</button>
+    <button class="tab"    id="t1" onclick="goTab(1)">まとめ</button>
   </div>
 </div>
-
-<div id="page"></div>
+<div id="pg"></div>
 
 <script>
-// ============================================================
-// データ定義
-// ============================================================
-var IL = ["なし", "軽度 ＋", "中程度 ＋＋", "重度 ＋＋＋"];
-var IC = ["#e8f5e9", "#fff9c4", "#ffe0b2", "#ffcdd2"];
-var IT = ["#388e3c", "#f9a825", "#e65100", "#c62828"];
-var BC = ["#e2e8f0", "#fde68a", "#fdba74", "#fca5a5"];
+var ILAB=["なし","軽度+","中程度++","重度+++"];
+var ICOL=["#e8f5e9","#fff9c4","#ffe0b2","#ffcdd2"];
+var ITXT=["#388e3c","#f9a825","#e65100","#c62828"];
+var BCOL=["#e2e8f0","#fde68a","#fdba74","#fca5a5"];
 
-var SYMS = [
-  ["throbbing", "💓 脈打つ痛み"],
-  ["heavy",     "🪨 重い痛み"],
-  ["nausea",    "🤢 吐き気・嘔吐"],
-  ["light",     "💡 光過敏"],
-  ["sound",     "🔊 音過敏"],
-  ["aura",      "✨ 前兆あり"]
-];
-var MEDS = [
-  ["loxonin",  "ロキソニン"],
-  ["bufferin", "バファリン"],
-  ["imigran",  "イミグラン"],
-  ["zomig",    "ゾーミック"],
-  ["maxalt",   "マクサルト"],
-  ["ibu",      "イブ"],
-  ["alinamin", "アリナミン"],
-  ["yunker",   "ユンケル"],
-  ["other",    "その他"]
-];
-var TIMS = [
-  ["morning",   "🌅 朝"],
-  ["afternoon", "☀️ 昼"],
-  ["evening",   "🌙 夜"]
-];
-var EFFS = [
-  ["much_better",   "かなり良くなった", "#16a34a", "#dcfce7"],
-  ["little_better", "少し良くなった",   "#ca8a04", "#fef9c3"],
-  ["no_change",     "変わらない",       "#9ca3af", "#f3f4f6"]
-];
-var TRIGS = [
-  ["sleep",     "睡眠不足"],
-  ["stress",    "ストレス"],
-  ["weather",   "天気・気圧"],
-  ["alcohol",   "飲酒"],
-  ["period",    "生理"],
-  ["screen",    "画面疲れ"],
-  ["skip_meal", "食事抜き"],
-  ["unknown",   "不明"]
-];
-var IMPS = [
-  ["none",     "影響なし"],
-  ["slight",   "少し支障あり"],
-  ["moderate", "かなり支障あり"],
-  ["severe",   "寝込んだ"]
-];
+var SYM=[["s1","脈打つ痛み"],["s2","重い痛み"],["s3","吐き気・嘔吐"],["s4","光過敏"],["s5","音過敏"],["s6","前兆あり"]];
+var MED=[["m1","ロキソニン"],["m2","バファリン"],["m3","イミグラン"],["m4","ゾーミック"],["m5","マクサルト"],["m6","イブ"],["m7","アリナミン"],["m8","ユンケル"],["m9","その他"]];
+var TIM=[["t1","朝"],["t2","昼"],["t3","夜"]];
+var EFF=[["e1","かなり良くなった","#16a34a","#dcfce7"],["e2","少し良くなった","#ca8a04","#fef9c3"],["e3","変わらない","#9ca3af","#f3f4f6"]];
+var TRG=[["r1","睡眠不足"],["r2","ストレス"],["r3","天気・気圧"],["r4","飲酒"],["r5","生理"],["r6","画面疲れ"],["r7","食事抜き"],["r8","不明"]];
+var IMP=[["i1","影響なし"],["i2","少し支障あり"],["i3","かなり支障あり"],["i4","寝込んだ"]];
 
-// ============================================================
-// 状態
-// ============================================================
-var SK = "hdiary_v2";
-var currentTab = "record";
-var today = new Date().toISOString().slice(0, 10);
-var selDate = today;
-var allEntries = loadAll();
-var cur = copyObj(allEntries[selDate] || newEntry());
+var SK="hd3";
+var ctab=0;
+var sdate=today();
+var DB=dbLoad();
+var cur=cp(DB[sdate]||emp());
 
-function newEntry() {
-  return { mo: 0, af: 0, ev: 0, syms: [], meds: [], trigs: [], impact: "", memo: "" };
-  // meds: [{ id, tims:[], eff:"" }, ...]
-}
-function copyObj(o) { return JSON.parse(JSON.stringify(o)); }
-function loadAll() {
-  try { return JSON.parse(localStorage.getItem(SK) || "{}"); }
-  catch(e) { return {}; }
-}
-function saveAll() {
-  try { localStorage.setItem(SK, JSON.stringify(allEntries)); }
-  catch(e) {}
-}
-function esc(s) {
-  return String(s)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;");
-}
-function findMed(id) {
-  for (var i = 0; i < cur.meds.length; i++) {
-    if (cur.meds[i].id === id) return cur.meds[i];
-  }
-  return null;
+function today(){return new Date().toISOString().slice(0,10)}
+function emp(){return{mo:0,af:0,ev:0,sym:[],med:[],trg:[],imp:"",memo:""}}
+function cp(o){return JSON.parse(JSON.stringify(o))}
+function dbLoad(){try{return JSON.parse(localStorage.getItem(SK)||"{}")}catch(e){return{}}}
+function dbSave(){try{localStorage.setItem(SK,JSON.stringify(DB))}catch(e){}}
+function lbl(arr,id){for(var i=0;i<arr.length;i++){if(arr[i][0]===id)return arr[i][1]}return id}
+function hasMed(id){for(var i=0;i<cur.med.length;i++){if(cur.med[i].id===id)return true}return false}
+function getMed(id){for(var i=0;i<cur.med.length;i++){if(cur.med[i].id===id)return cur.med[i]}return null}
+function x(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+function render(){
+  document.getElementById("pg").innerHTML=ctab===0?buildRec():buildSum();
+  var di=document.getElementById("di");
+  if(di)di.onchange=function(){sdate=this.value;cur=cp(DB[sdate]||emp());render()};
+  var mi=document.getElementById("mi");
+  if(mi)mi.oninput=function(){cur.memo=this.value};
 }
 
-// ============================================================
-// レンダリング
-// ============================================================
-function render() {
-  var p = document.getElementById("page");
-  p.innerHTML = (currentTab === "record") ? buildRecord() : buildSummary();
-  bindAll();
-}
+function buildRec(){
+  var h="";
 
-// ---- 記録タブ ----
-function buildRecord() {
-  var h = "";
-
-  // 日付
-  h += "<div class='card'>";
-  h += "<div style='display:flex;align-items:center;gap:10px'>";
-  h += "<span style='font-size:22px'>📅</span>";
-  h += "<div style='flex:1'>";
-  h += "<div style='font-size:10px;color:#9ca3af;margin-bottom:2px'>記録する日付</div>";
-  h += "<input type='date' id='inp-date' value='" + esc(selDate) + "' style='border:none;font-size:16px;font-weight:700;color:#111;background:transparent;outline:none;width:100%'>";
-  h += "</div>";
-  if (allEntries[selDate]) {
-    h += "<span style='font-size:11px;background:#dcfce7;color:#16a34a;border-radius:7px;padding:3px 8px;font-weight:700'>記録済</span>";
-  }
-  h += "</div></div>";
+  // 日付カード
+  h+="<div class='card'>";
+  h+="<div style='display:flex;align-items:center;gap:10px'>";
+  h+="<div style='flex:1'>";
+  h+="<div style='font-size:10px;color:#9ca3af;margin-bottom:2px'>記録する日付</div>";
+  h+="<input type='date' id='di' value='"+x(sdate)+"' style='border:none;font-size:16px;font-weight:700;color:#111;background:transparent;outline:none;width:100%'>";
+  h+="</div>";
+  if(DB[sdate])h+="<span style='font-size:11px;background:#dcfce7;color:#16a34a;border-radius:7px;padding:3px 8px;font-weight:700'>記録済</span>";
+  h+="</div></div>";
 
   // 痛みの程度
-  h += "<div class='card'><div class='sec-title'>痛みの程度</div>";
-  h += buildIntRow("mo", "朝", cur.mo);
-  h += buildIntRow("af", "昼", cur.af);
-  h += buildIntRow("ev", "夜", cur.ev);
-  h += "</div>";
+  h+="<div class='card'><div class='stitle'>痛みの程度</div>";
+  h+=irow("mo","朝",cur.mo)+irow("af","昼",cur.af)+irow("ev","夜",cur.ev);
+  h+="</div>";
 
   // 症状
-  h += "<div class='card'><div class='sec-title'>症状</div><div class='chips'>";
-  for (var i = 0; i < SYMS.length; i++) {
-    var id = SYMS[i][0], lb = SYMS[i][1];
-    var on = cur.syms.indexOf(id) >= 0;
-    h += "<button class='chip" + (on ? " on" : "") + "' onclick='toggleSym(\"" + id + "\",this)'>" + lb + "</button>";
+  h+="<div class='card'><div class='stitle'>症状</div><div class='chips'>";
+  for(var i=0;i<SYM.length;i++){
+    var on=cur.sym.indexOf(SYM[i][0])>=0;
+    h+="<button class='chip"+(on?" on":"")+"' onclick='tSym(\""+SYM[i][0]+"\",this)'>"+SYM[i][1]+"</button>";
   }
-  h += "</div></div>";
+  h+="</div></div>";
 
   // 服薬
-  h += "<div class='card'><div class='sec-title'>服薬</div>";
-  h += "<div class='chips' style='margin-bottom:4px'>";
-  for (var i = 0; i < MEDS.length; i++) {
-    var id = MEDS[i][0], lb = MEDS[i][1];
-    var on = findMed(id) !== null;
-    h += "<button class='chip" + (on ? " on" : "") + "' onclick='toggleMed(\"" + id + "\",this)'>" + (on ? "✓ " : "") + lb + "</button>";
+  h+="<div class='card'><div class='stitle'>服薬</div>";
+  h+="<div class='chips' style='margin-bottom:6px'>";
+  for(var i=0;i<MED.length;i++){
+    var on=hasMed(MED[i][0]);
+    h+="<button class='chip"+(on?" on":"")+"' onclick='tMed(\""+MED[i][0]+"\",\""+MED[i][1]+"\",this)'>"+(on?"&#10003; ":"")+MED[i][1]+"</button>";
   }
-  h += "</div>";
-  h += "<div id='med-cards'>" + buildMedCards() + "</div>";
-  h += "</div>";
+  h+="</div>";
+  h+="<div id='mc'>"+buildMC()+"</div>";
+  h+="</div>";
 
   // 誘因
-  h += "<div class='card'><div class='sec-title'>考えられる誘因</div><div class='chips'>";
-  for (var i = 0; i < TRIGS.length; i++) {
-    var id = TRIGS[i][0], lb = TRIGS[i][1];
-    var on = cur.trigs.indexOf(id) >= 0;
-    h += "<button class='chip" + (on ? " on" : "") + "' onclick='toggleTrig(\"" + id + "\",this)'>" + lb + "</button>";
+  h+="<div class='card'><div class='stitle'>考えられる誘因</div><div class='chips'>";
+  for(var i=0;i<TRG.length;i++){
+    var on=cur.trg.indexOf(TRG[i][0])>=0;
+    h+="<button class='chip"+(on?" on":"")+"' onclick='tTrg(\""+TRG[i][0]+"\",this)'>"+TRG[i][1]+"</button>";
   }
-  h += "</div></div>";
+  h+="</div></div>";
 
   // 日常への影響
-  h += "<div class='card'><div class='sec-title'>日常生活への影響</div><div class='chips'>";
-  for (var i = 0; i < IMPS.length; i++) {
-    var id = IMPS[i][0], lb = IMPS[i][1];
-    var on = cur.impact === id;
-    h += "<button class='chip" + (on ? " on-purple" : "") + "' onclick='setImpact(\"" + id + "\")'>" + lb + "</button>";
+  h+="<div class='card'><div class='stitle'>日常生活への影響</div><div class='chips'>";
+  for(var i=0;i<IMP.length;i++){
+    var on=cur.imp===IMP[i][0];
+    h+="<button class='chip"+(on?" onp":"")+"' onclick='sImp(\""+IMP[i][0]+"\")'>"+(on?"&#10003; ":"")+IMP[i][1]+"</button>";
   }
-  h += "</div></div>";
+  h+="</div></div>";
 
   // メモ
-  h += "<div class='card'><div class='sec-title'>自由メモ</div>";
-  h += "<textarea id='inp-memo' rows='3' placeholder='気になること、医師への伝言など...'>" + esc(cur.memo) + "</textarea>";
+  h+="<div class='card'><div class='stitle'>自由メモ</div>";
+  h+="<textarea id='mi' rows='3' placeholder='気になること、医師への伝言など...'>"+x(cur.memo)+"</textarea>";
 
-h += “</div>”;
+h+=”</div>”;
 
-// 保存
-h += “<button id='btn-save' onclick='doSave()'>💾 この日の記録を保存</button>”;
-h += “<div style='height:16px'></div>”;
+h+=”<button id='sbtn' onclick='doSave()'>この日の記録を保存</button>”;
+h+=”<div style='height:20px'></div>”;
 return h;
 }
 
-function buildIntRow(field, label, val) {
-var h = “<div style='margin-bottom:8px'>”;
-h += “<div class='int-label'>” + label + “</div>”;
-h += “<div class='int-row'>”;
-for (var i = 0; i < IL.length; i++) {
-var on = val === i;
-h += “<button class=‘int-btn’”;
-h += “ style=‘background:” + IC[i] + “;color:” + IT[i] + “;border-color:” + (on ? IT[i] : “transparent”) + “;font-weight:” + (on ? “800” : “500”) + “’”;
-h += “ onclick=‘setInt("” + field + “",” + i + “)’>” + IL[i] + “</button>”;
+function irow(f,lbl,val){
+var h=”<div style='margin-bottom:7px'>”;
+h+=”<div class='ilbl'>”+lbl+”</div><div class='irow'>”;
+for(var i=0;i<ILAB.length;i++){
+var on=val===i;
+h+=”<button class=‘ibtn’ style=‘background:”+ICOL[i]+”;color:”+ITXT[i]+”;border-color:”+(on?ITXT[i]:“transparent”)+”;font-weight:”+(on?“800”:“500”)+”’”;
+h+=” onclick=‘sInt("”+f+”",”+i+”)’>”+ILAB[i]+”</button>”;
 }
-h += “</div></div>”;
+h+=”</div></div>”;
 return h;
 }
 
-function buildMedCards() {
-var h = “”;
-for (var i = 0; i < cur.meds.length; i++) {
-var m = cur.meds[i];
-var lb = “”;
-for (var j = 0; j < MEDS.length; j++) {
-if (MEDS[j][0] === m.id) { lb = MEDS[j][1]; break; }
+function buildMC(){
+var h=””;
+for(var i=0;i<cur.med.length;i++){
+var m=cur.med[i];
+h+=”<div class='mcard' id='mc"+m.id+"'>”;
+h+=”<div class='mcard-top'>”;
+h+=”<span class='mcard-name'>”+lbl(MED,m.id)+”</span>”;
+h+=”<button class='mdel' onclick='dMed(\""+m.id+"\")'>×</button>”;
+h+=”</div>”;
+h+=”<div class='slbl'>服薬タイミング</div><div class='trow'>”;
+for(var j=0;j<TIM.length;j++){
+var on=m.tim.indexOf(TIM[j][0])>=0;
+h+=”<button class='tbtn"+(on?" on":"")+"' onclick='tTim(\""+m.id+"\",\""+TIM[j][0]+"\",this)'>”+TIM[j][1]+”</button>”;
 }
-h += “<div class='med-card' id='mc-" + m.id + "'>”;
-h += “<div class='med-card-top'>”;
-h += “<span class='med-card-name'>💊 “ + esc(lb) + “</span>”;
-h += “<button class='med-del' onclick='delMed(\"" + m.id + "\")'>×</button>”;
-h += “</div>”;
-
-```
-h += "<div class='sub-title'>服薬タイミング</div><div class='tim-row'>";
-for (var j = 0; j < TIMS.length; j++) {
-  var tid = TIMS[j][0], tlb = TIMS[j][1];
-  var on = m.tims.indexOf(tid) >= 0;
-  h += "<button class='tim-btn" + (on ? " on" : "") + "' onclick='toggleTim(\"" + m.id + "\",\"" + tid + "\",this)'>" + tlb + "</button>";
+h+=”</div>”;
+h+=”<div class='slbl'>服薬後の効果</div><div class='erow'>”;
+for(var j=0;j<EFF.length;j++){
+var on=m.eff===EFF[j][0];
+h+=”<button class=‘ebtn’ id=‘eb”+m.id+EFF[j][0]+”’”;
+h+=” style=‘border-color:”+(on?EFF[j][2]:”#d1d5db”)+”;background:”+(on?EFF[j][3]:”#fff”)+”;color:”+(on?EFF[j][2]:”#6b7280”)+”;font-weight:”+(on?“800”:“400”)+”’”;
+h+=” onclick=‘sEff("”+m.id+”","”+EFF[j][0]+”")’>”+EFF[j][1]+”</button>”;
 }
-h += "</div>";
-
-h += "<div class='sub-title'>服薬後の効果</div><div class='eff-row'>";
-for (var j = 0; j < EFFS.length; j++) {
-  var eid = EFFS[j][0], elb = EFFS[j][1], ec = EFFS[j][2], eb = EFFS[j][3];
-  var on = m.eff === eid;
-  h += "<button class='eff-btn'";
-  h += " id='eff-" + m.id + "-" + eid + "'";
-  h += " style='border-color:" + (on ? ec : "#d1d5db") + ";background:" + (on ? eb : "#fff") + ";color:" + (on ? ec : "#6b7280") + ";font-weight:" + (on ? "800" : "400") + "'";
-  h += " onclick='setEff(\"" + m.id + "\",\"" + eid + "\")'>" + elb + "</button>";
-}
-h += "</div></div>";
-```
-
+h+=”</div></div>”;
 }
 return h;
 }
 
-// –– まとめタブ ––
-function buildSummary() {
-var dates = Object.keys(allEntries).sort();
-var h = “”;
-
-if (dates.length === 0) {
-h += “<div class='card' style='text-align:center;padding:50px 0;color:#9ca3af'>まだ記録がありません</div>”;
+function buildSum(){
+var dates=Object.keys(DB).sort();
+var h=””;
+if(dates.length===0){
+h+=”<div class='card' style='text-align:center;padding:50px 0;color:#9ca3af;font-size:14px'>まだ記録がありません</div>”;
 } else {
-// カレンダー
-h += “<div class='card'>”;
-h += “<div class='sec-title' style='margin-bottom:10px'>📅 カレンダー</div>”;
-h += “<div class='cal-grid'>”;
-for (var i = 0; i < dates.length; i++) {
-var d = dates[i];
-var e = allEntries[d];
-var mx = Math.max(e.mo, e.af, e.ev);
-h += “<div class='cal-cell' style='background:" + BC[mx] + ";color:" + (mx === 0 ? "#94a3b8" : "#374151") + "'>”;
-h += d.slice(8);
-h += “<small>” + d.slice(5,7) + “月</small>”;
-h += “</div>”;
+h+=”<div class='card'><div class='stitle' style='margin-bottom:10px'>カレンダー</div><div class='cgrid'>”;
+for(var i=0;i<dates.length;i++){
+var d=dates[i];var e=DB[d];
+var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
+h+=”<div class='ccell' style='background:"+BCOL[mx]+";color:"+(mx===0?"#94a3b8":"#374151")+"'>”;
+h+=d.slice(8)+”<small>”+d.slice(5,7)+“月</small></div>”;
 }
-h += “</div>”;
-h += “<div class='legend'>”;
-for (var i = 0; i < IL.length; i++) {
-h += “<span><span class='legend-dot' style='background:" + BC[i] + ";border:1px solid rgba(0,0,0,0.1)'></span>” + IL[i] + “</span>”;
-}
-h += “</div></div>”;
+h+=”</div><div class='lgd'>”;
+for(var i=0;i<ILAB.length;i++)h+=”<span><span class='ldot' style='background:"+BCOL[i]+"'></span>”+ILAB[i]+”</span>”;
+h+=”</div></div>”;
 
 ```
-// 記録一覧
-h += "<div class='card'><div class='sec-title' style='margin-bottom:10px'>📋 記録一覧</div>";
-for (var di = dates.length - 1; di >= 0; di--) {
-  var d = dates[di];
-  var e = allEntries[d];
-  var mx = Math.max(e.mo, e.af, e.ev);
-  h += "<div class='rec-card' style='border-left-color:" + IT[mx] + "'>";
-  h += "<div class='rec-top'>";
-  h += "<span class='rec-date'>" + esc(d) + "</span>";
-  h += "<span class='rec-badge' style='background:" + IC[mx] + ";color:" + IT[mx] + "'>最大: " + IL[mx] + "</span>";
-  h += "</div>";
-  h += "<div class='rec-times'>朝 " + IL[e.mo] + " ／ 昼 " + IL[e.af] + " ／ 夜 " + IL[e.ev] + "</div>";
+h+="<div class='card'><div class='stitle' style='margin-bottom:10px'>記録一覧</div>";
+for(var di=dates.length-1;di>=0;di--){
+  var d=dates[di];var e=DB[d];
+  var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
+  h+="<div class='rcard' style='border-left-color:"+ITXT[mx]+"'>";
+  h+="<div class='rtop'><span class='rdate'>"+x(d)+"</span>";
+  h+="<span class='rbadge' style='background:"+ICOL[mx]+";color:"+ITXT[mx]+"'>最大: "+ILAB[mx]+"</span></div>";
+  h+="<div class='rtimes'>朝 "+ILAB[e.mo||0]+" / 昼 "+ILAB[e.af||0]+" / 夜 "+ILAB[e.ev||0]+"</div>";
 
-  if (e.syms && e.syms.length) {
-    var sl = [];
-    for (var i = 0; i < e.syms.length; i++) {
-      for (var j = 0; j < SYMS.length; j++) {
-        if (SYMS[j][0] === e.syms[i]) { sl.push(SYMS[j][1]); break; }
-      }
-    }
-    h += "<div class='rec-row'>症状: " + esc(sl.join("・")) + "</div>";
+  if(e.sym&&e.sym.length){
+    var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));
+    h+="<div class='rrow'>症状: "+x(sl.join("・"))+"</div>";
   }
-
-  if (e.meds && e.meds.length) {
-    var ml = [];
-    for (var i = 0; i < e.meds.length; i++) {
-      var m = e.meds[i];
-      var nm = m.id;
-      for (var j = 0; j < MEDS.length; j++) { if (MEDS[j][0] === m.id) { nm = MEDS[j][1]; break; } }
-      var tl = [];
-      for (var j = 0; j < (m.tims||[]).length; j++) {
-        for (var k = 0; k < TIMS.length; k++) { if (TIMS[k][0] === m.tims[j]) { tl.push(TIMS[k][1]); break; } }
-      }
-      var ef = "";
-      for (var j = 0; j < EFFS.length; j++) { if (EFFS[j][0] === m.eff) { ef = EFFS[j][1]; break; } }
-      var part = nm;
-      if (tl.length) part += "（" + tl.join("・") + "）";
-      if (ef) part += " → " + ef;
-      ml.push(part);
+  if(e.med&&e.med.length){
+    var ml=[];
+    for(var i=0;i<e.med.length;i++){
+      var m=e.med[i];
+      var p=lbl(MED,m.id);
+      if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+="("+tl.join("・")+")";}
+      if(m.eff)p+=" → "+lbl(EFF,m.eff);
+      ml.push(p);
     }
-    h += "<div class='rec-row'>薬: " + esc(ml.join(" / ")) + "</div>";
+    h+="<div class='rrow'>薬: "+x(ml.join(" / "))+"</div>";
   }
-
-  if (e.trigs && e.trigs.length) {
-    var tl = [];
-    for (var i = 0; i < e.trigs.length; i++) {
-      for (var j = 0; j < TRIGS.length; j++) { if (TRIGS[j][0] === e.trigs[i]) { tl.push(TRIGS[j][1]); break; } }
-    }
-    h += "<div class='rec-row'>誘因: " + esc(tl.join("・")) + "</div>";
+  if(e.trg&&e.trg.length){
+    var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));
+    h+="<div class='rrow'>誘因: "+x(tl.join("・"))+"</div>";
   }
-
-  if (e.impact) {
-    for (var i = 0; i < IMPS.length; i++) {
-      if (IMPS[i][0] === e.impact) { h += "<div class='rec-row'>影響: " + esc(IMPS[i][1]) + "</div>"; break; }
-    }
-  }
-  if (e.memo) h += "<div class='rec-memo'>" + esc(e.memo) + "</div>";
-  h += "</div>";
+  if(e.imp)h+="<div class='rrow'>影響: "+x(lbl(IMP,e.imp))+"</div>";
+  if(e.memo)h+="<div class='rmemo'>"+x(e.memo)+"</div>";
+  h+="</div>";
 }
-h += "</div>";
+h+="</div>";
 ```
 
 }
-
-h += “<button id='btn-export' onclick='doExport()'>📄 テキストに書き出す（医師へ）</button>”;
-h += “<div style='height:16px'></div>”;
+h+=”<button id='ebtn' onclick='doExp()'>テキストに書き出す（医師へ）</button>”;
+h+=”<div style='height:20px'></div>”;
 return h;
 }
 
-// ============================================================
-// イベントバインド
-// ============================================================
-function bindAll() {
-var di = document.getElementById(“inp-date”);
-if (di) {
-di.onchange = function() {
-selDate = this.value;
-cur = copyObj(allEntries[selDate] || newEntry());
-render();
-};
-}
-var memo = document.getElementById(“inp-memo”);
-if (memo) {
-memo.oninput = function() { cur.memo = this.value; };
-}
-}
-
-// ============================================================
-// インタラクション（inline onclick で呼ぶ）
-// ============================================================
-function setInt(field, val) {
-cur[field] = val;
-// ボタンのスタイルを更新
-var btns = document.querySelectorAll(”[onclick*=‘setInt("” + field + “"’]”);
-// 再描画が一番確実
-var card = document.querySelector(”#page .card:nth-child(2)”);
-if (card) {
-// int-row だけ更新
-var rows = card.querySelectorAll(”.int-row”);
-var fields = [“mo”, “af”, “ev”];
-for (var f = 0; f < fields.length; f++) {
-if (fields[f] !== field) continue;
-var rowBtns = rows[f].querySelectorAll(”.int-btn”);
-for (var i = 0; i < rowBtns.length; i++) {
-var on = i === val;
-rowBtns[i].style.borderColor = on ? IT[val] : “transparent”;
-rowBtns[i].style.fontWeight  = on ? “800” : “500”;
+// — アクション —
+function sInt(f,v){
+cur[f]=v;
+var btns=document.querySelectorAll(”[onclick*=‘sInt("”+f+”"’]”);
+// カード2番目の該当行を探してスタイル更新
+var rows=document.querySelectorAll(”.irow”);
+var fmap={mo:0,af:1,ev:2};
+var row=rows[fmap[f]];
+if(row){
+var bs=row.querySelectorAll(”.ibtn”);
+for(var i=0;i<bs.length;i++){
+var on=i===v;
+bs[i].style.borderColor=on?ITXT[v]:“transparent”;
+bs[i].style.fontWeight=on?“800”:“500”;
 }
 }
 }
+function tSym(id,btn){
+var idx=cur.sym.indexOf(id);
+if(idx>=0){cur.sym.splice(idx,1);btn.className=“chip”;}
+else{cur.sym.push(id);btn.className=“chip on”;}
 }
-
-function toggleSym(id, btn) {
-var idx = cur.syms.indexOf(id);
-if (idx >= 0) { cur.syms.splice(idx, 1); btn.classList.remove(“on”); }
-else { cur.syms.push(id); btn.classList.add(“on”); }
+function tTrg(id,btn){
+var idx=cur.trg.indexOf(id);
+if(idx>=0){cur.trg.splice(idx,1);btn.className=“chip”;}
+else{cur.trg.push(id);btn.className=“chip on”;}
 }
-
-function toggleTrig(id, btn) {
-var idx = cur.trigs.indexOf(id);
-if (idx >= 0) { cur.trigs.splice(idx, 1); btn.classList.remove(“on”); }
-else { cur.trigs.push(id); btn.classList.add(“on”); }
-}
-
-function setImpact(id) {
-cur.impact = (cur.impact === id) ? “” : id;
-var btns = document.querySelectorAll(”[onclick*=‘setImpact’]”);
-for (var i = 0; i < btns.length; i++) {
-var bid = btns[i].getAttribute(“onclick”).replace(“setImpact("”,””).replace(”")”,””);
-btns[i].className = “chip” + (bid === cur.impact ? “ on-purple” : “”);
+function sImp(id){
+cur.imp=(cur.imp===id)?””:id;
+var btns=document.querySelectorAll(”[onclick*=‘sImp’]”);
+for(var i=0;i<btns.length;i++){
+var bid=btns[i].getAttribute(“onclick”).replace(“sImp("”,””).replace(”")”,””);
+var on=bid===cur.imp;
+btns[i].className=“chip”+(on?” onp”:””);
+btns[i].textContent=(on?”\u2713 “:””)+lbl(IMP,bid);
 }
 }
-
-function toggleMed(id, btn) {
-var existing = findMed(id);
-if (existing) {
-cur.meds = cur.meds.filter(function(m) { return m.id !== id; });
-btn.classList.remove(“on”);
-// ラベル復元
-for (var i = 0; i < MEDS.length; i++) {
-if (MEDS[i][0] === id) { btn.textContent = MEDS[i][1]; break; }
-}
+function tMed(id,name,btn){
+if(hasMed(id)){
+cur.med=cur.med.filter(function(m){return m.id!==id});
+btn.className=“chip”;btn.textContent=name;
 } else {
-cur.meds.push({ id: id, tims: [], eff: “” });
-btn.classList.add(“on”);
-for (var i = 0; i < MEDS.length; i++) {
-if (MEDS[i][0] === id) { btn.textContent = “✓ “ + MEDS[i][1]; break; }
+cur.med.push({id:id,tim:[],eff:””});
+btn.className=“chip on”;btn.textContent=”\u2713 “+name;
+}
+document.getElementById(“mc”).innerHTML=buildMC();
+}
+function dMed(id){
+cur.med=cur.med.filter(function(m){return m.id!==id});
+var btns=document.querySelectorAll(”[onclick*=‘tMed("”+id+”"’]”);
+for(var i=0;i<btns.length;i++){
+btns[i].className=“chip”;
+btns[i].textContent=lbl(MED,id);
+}
+document.getElementById(“mc”).innerHTML=buildMC();
+}
+function tTim(mid,tid,btn){
+var m=getMed(mid);if(!m)return;
+var idx=m.tim.indexOf(tid);
+if(idx>=0){m.tim.splice(idx,1);btn.className=“tbtn”;}
+else{m.tim.push(tid);btn.className=“tbtn on”;}
+}
+function sEff(mid,eid){
+var m=getMed(mid);if(!m)return;
+m.eff=(m.eff===eid)?””:eid;
+for(var j=0;j<EFF.length;j++){
+var el=document.getElementById(“eb”+mid+EFF[j][0]);
+if(!el)continue;
+var on=m.eff===EFF[j][0];
+el.style.borderColor=on?EFF[j][2]:”#d1d5db”;
+el.style.background=on?EFF[j][3]:”#fff”;
+el.style.color=on?EFF[j][2]:”#6b7280”;
+el.style.fontWeight=on?“800”:“400”;
 }
 }
-document.getElementById(“med-cards”).innerHTML = buildMedCards();
+function doSave(){
+DB[sdate]=cp(cur);dbSave();
+var b=document.getElementById(“sbtn”);
+b.textContent=“保存しました！”;b.style.background=“linear-gradient(135deg,#16a34a,#15803d)”;
+setTimeout(function(){b.textContent=“この日の記録を保存”;b.style.background=“linear-gradient(135deg,#4a7c9e,#2d5a78)”},2000);
 }
-
-function delMed(id) {
-cur.meds = cur.meds.filter(function(m) { return m.id !== id; });
-// チップも戻す
-var btns = document.querySelectorAll(”[onclick*=‘toggleMed’]”);
-for (var i = 0; i < btns.length; i++) {
-var bid = btns[i].getAttribute(“onclick”).replace(/toggleMed(”([^”]+)”.*/,”$1”);
-if (bid === id) {
-btns[i].classList.remove(“on”);
-for (var j = 0; j < MEDS.length; j++) {
-if (MEDS[j][0] === id) { btns[i].textContent = MEDS[j][1]; break; }
+function doExp(){
+var lines=[“頭痛ダイアリー”,””],dates=Object.keys(DB).sort();
+for(var di=0;di<dates.length;di++){
+var d=dates[di],e=DB[d];
+lines.push(“■ “+d);
+lines.push(”  痛み: 朝=”+ILAB[e.mo||0]+” 昼=”+ILAB[e.af||0]+” 夜=”+ILAB[e.ev||0]);
+if(e.sym&&e.sym.length){var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));lines.push(”  症状: “+sl.join(”、”));}
+if(e.med&&e.med.length){
+var ml=[];
+for(var i=0;i<e.med.length;i++){
+var m=e.med[i],p=lbl(MED,m.id);
+if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+=”(”+tl.join(”・”)+”)”;}
+if(m.eff)p+=” → “+lbl(EFF,m.eff);
+ml.push(p);
 }
+lines.push(”  服薬: “+ml.join(” / “));
 }
+if(e.trg&&e.trg.length){var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));lines.push(”  誘因: “+tl.join(”、”));}
+if(e.imp)lines.push(”  影響: “+lbl(IMP,e.imp));
+if(e.memo)lines.push(”  メモ: “+e.memo);
+lines.push(””);
 }
-document.getElementById(“med-cards”).innerHTML = buildMedCards();
-}
-
-function toggleTim(medId, tid, btn) {
-var m = findMed(medId);
-if (!m) return;
-var idx = m.tims.indexOf(tid);
-if (idx >= 0) { m.tims.splice(idx, 1); btn.classList.remove(“on”); }
-else { m.tims.push(tid); btn.classList.add(“on”); }
-}
-
-function setEff(medId, eid) {
-var m = findMed(medId);
-if (!m) return;
-m.eff = (m.eff === eid) ? “” : eid;
-for (var i = 0; i < EFFS.length; i++) {
-var el = document.getElementById(“eff-” + medId + “-” + EFFS[i][0]);
-if (!el) continue;
-var on = m.eff === EFFS[i][0];
-el.style.borderColor = on ? EFFS[i][2] : “#d1d5db”;
-el.style.background  = on ? EFFS[i][3] : “#fff”;
-el.style.color       = on ? EFFS[i][2] : “#6b7280”;
-el.style.fontWeight  = on ? “800” : “400”;
-}
-}
-
-// ============================================================
-// 保存 / 書き出し
-// ============================================================
-function doSave() {
-allEntries[selDate] = copyObj(cur);
-saveAll();
-var btn = document.getElementById(“btn-save”);
-btn.textContent = “✅ 保存しました！”;
-btn.style.background = “linear-gradient(135deg,#16a34a,#15803d)”;
-setTimeout(function() {
-btn.textContent = “💾 この日の記録を保存”;
-btn.style.background = “linear-gradient(135deg,#4a7c9e,#2d5a78)”;
-}, 2000);
-}
-
-function doExport() {
-var lines = [“頭痛ダイアリー エクスポート”, “”];
-var dates = Object.keys(allEntries).sort();
-for (var di = 0; di < dates.length; di++) {
-var d = dates[di];
-var e = allEntries[d];
-lines.push(“■ “ + d);
-lines.push(”  痛みの程度: 朝=” + IL[e.mo] + “ 昼=” + IL[e.af] + “ 夜=” + IL[e.ev]);
-
-```
-if (e.syms && e.syms.length) {
-  var sl = [];
-  for (var i = 0; i < e.syms.length; i++) {
-    for (var j = 0; j < SYMS.length; j++) { if (SYMS[j][0] === e.syms[i]) { sl.push(SYMS[j][1]); break; } }
-  }
-  lines.push("  症状: " + sl.join("、"));
-}
-if (e.meds && e.meds.length) {
-  var ml = [];
-  for (var i = 0; i < e.meds.length; i++) {
-    var m = e.meds[i];
-    var nm = m.id;
-    for (var j = 0; j < MEDS.length; j++) { if (MEDS[j][0] === m.id) { nm = MEDS[j][1]; break; } }
-    var tl = [];
-    for (var j = 0; j < (m.tims||[]).length; j++) {
-      for (var k = 0; k < TIMS.length; k++) { if (TIMS[k][0] === m.tims[j]) { tl.push(TIMS[k][1]); break; } }
-    }
-    var ef = "";
-    for (var j = 0; j < EFFS.length; j++) { if (EFFS[j][0] === m.eff) { ef = EFFS[j][1]; break; } }
-    var part = nm;
-    if (tl.length) part += "（" + tl.join("・") + "）";
-    if (ef) part += " → " + ef;
-    ml.push(part);
-  }
-  lines.push("  服薬: " + ml.join(" / "));
-}
-if (e.trigs && e.trigs.length) {
-  var tl = [];
-  for (var i = 0; i < e.trigs.length; i++) {
-    for (var j = 0; j < TRIGS.length; j++) { if (TRIGS[j][0] === e.trigs[i]) { tl.push(TRIGS[j][1]); break; } }
-  }
-  lines.push("  誘因: " + tl.join("、"));
-}
-if (e.impact) {
-  for (var i = 0; i < IMPS.length; i++) { if (IMPS[i][0] === e.impact) { lines.push("  日常への影響: " + IMPS[i][1]); break; } }
-}
-if (e.memo) lines.push("  メモ: " + e.memo);
-lines.push("");
-```
-
-}
-var blob = new Blob([lines.join(”\n”)], { type: “text/plain;charset=utf-8” });
-var url = URL.createObjectURL(blob);
-var a = document.createElement(“a”);
-a.href = url; a.download = “headache_diary.txt”; a.click();
+var blob=new Blob([lines.join(”\n”)],{type:“text/plain;charset=utf-8”});
+var url=URL.createObjectURL(blob);
+var a=document.createElement(“a”);a.href=url;a.download=“headache_diary.txt”;a.click();
 URL.revokeObjectURL(url);
 }
-
-// ============================================================
-// タブ切り替え
-// ============================================================
-function switchTab(t) {
-currentTab = t;
-document.getElementById(“tab-record”).className = “tab” + (t === “record” ? “ on” : “”);
-document.getElementById(“tab-summary”).className = “tab” + (t === “summary” ? “ on” : “”);
+function goTab(n){
+ctab=n;
+document.getElementById(“t0”).className=“tab”+(n===0?” on”:””);
+document.getElementById(“t1”).className=“tab”+(n===1?” on”:””);
 render();
 }
 
-// ============================================================
 // 起動
-// ============================================================
-render();
+try{render();}catch(e){document.getElementById(“pg”).innerHTML=”<div style='padding:20px;color:red'>エラー: “+e.message+”</div>”;}
 </script>
 
 </body>
