@@ -1,571 +1,431 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="頭痛ダイアリー">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2d5a78">
+  <title>頭痛ダイアリー</title>
+  <style>
+    :root {
+      --hdr1: #2d5a78;
+      --hdr2: #4a7c9e;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bot: env(safe-area-inset-bottom, 20px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #f0f7ff 0%, #faf5ff 100%);
+      min-height: 100vh;
+      padding-bottom: calc(var(--safe-bot) + 16px);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, textarea, input { font-family: inherit; }
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="頭痛ダイアリー">
-<meta name="theme-color" content="#2d5a78">
-
-<title>頭痛ダイアリー</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  -webkit-tap-highlight-color:transparent;
+```
+#header {
+  background: linear-gradient(135deg, var(--hdr2) 0%, var(--hdr1) 100%);
+  padding: calc(var(--safe-top) + 52px) 20px 0;
+  color: #fff;
+  position: sticky; top: 0; z-index: 100;
 }
-
-body{
-  font-family:'Hiragino Sans','Noto Sans JP',sans-serif;
-  background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);
-  min-height:100vh;
-  color:#222;
+#header-sub { font-size: 10px; letter-spacing: .15em; opacity: .7; margin-bottom: 2px; }
+#header-title { font-size: 22px; font-weight: 900; margin-bottom: 16px; }
+#tabs { display: flex; }
+.tab-btn {
+  flex: 1; padding: 10px 0; background: transparent;
+  color: rgba(255,255,255,.75); border: none;
+  border-radius: 10px 10px 0 0; font-weight: 500;
+  font-size: 13px; cursor: pointer; transition: all .2s;
 }
+.tab-btn.active { background: #fff; color: var(--hdr2); font-weight: 800; }
 
-#header{
-  background:linear-gradient(135deg,#4a7c9e 0%,#2d5a78 100%);
-  padding:52px 20px 0;
-  color:#fff;
-}
+#content { padding: 16px 16px 0; }
 
-#header-sub{
-  font-size:10px;
-  letter-spacing:.15em;
-  opacity:.7;
-  margin-bottom:2px;
-}
+.card { background: #fff; border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.card-form { background: #fff; border-radius: 18px; padding: 20px 16px; box-shadow: 0 2px 16px rgba(0,0,0,.07); margin-bottom: 14px; }
 
-#header-title{
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:16px;
-}
+.section { margin-bottom: 22px; }
+.section-title { font-size: 13px; font-weight: 800; color: #374151; margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--hdr2); letter-spacing: .05em; }
 
-#tabs{
-  display:flex;
-}
+.intensity-row { margin-bottom: 10px; }
+.intensity-label { font-size: 12px; color: #6b7280; margin-bottom: 6px; font-weight: 600; }
+.intensity-btns { display: flex; gap: 6px; }
+.intensity-btn { flex: 1; padding: 8px 4px; border-radius: 10px; border: 2px solid transparent; font-size: 11px; font-weight: 500; cursor: pointer; transition: all .15s; }
 
-.tab-btn{
-  flex:1;
-  padding:10px 0;
-  border:none;
-  border-radius:10px 10px 0 0;
-  background:transparent;
-  color:rgba(255,255,255,.8);
-  font-size:13px;
-  font-weight:500;
-}
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip { padding: 6px 12px; border-radius: 20px; border: 2px solid #e5e7eb; background: #f9fafb; color: #6b7280; font-size: 12px; font-weight: 400; cursor: pointer; transition: all .15s; }
+.chip.on { border-color: var(--hdr2); background: #dbeafe; color: #1e40af; font-weight: 700; }
+.chip.single.on { border-color: #7c3aed; background: #ede9fe; color: #5b21b6; font-weight: 700; }
 
-.tab-btn.active{
-  background:#fff;
-  color:#4a7c9e;
-  font-weight:800;
-}
+.med-card { background: #f0f7ff; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid #bfdbfe; }
+.med-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.med-card-title { font-weight: 800; font-size: 13px; color: #1e40af; }
+.med-remove { background: none; border: none; color: #9ca3af; font-size: 22px; cursor: pointer; line-height: 1; padding: 0 4px; }
+.sub-label { font-size: 11px; color: #6b7280; margin-bottom: 6px; font-weight: 600; }
+.timing-btns { display: flex; gap: 7px; margin-bottom: 8px; }
+.timing-btn { flex: 1; padding: 7px 4px; border-radius: 10px; border: 2px solid #e5e7eb; background: #fff; color: #6b7280; font-size: 12px; font-weight: 400; cursor: pointer; transition: all .15s; }
+.timing-btn.on { border-color: var(--hdr2); background: #dbeafe; color: #1e40af; font-weight: 800; }
+.effect-btns { display: flex; gap: 7px; }
+.effect-btn { flex: 1; padding: 7px 4px; border-radius: 10px; border: 2px solid #e5e7eb; background: #fff; color: #6b7280; font-size: 11px; font-weight: 400; cursor: pointer; transition: all .15s; line-height: 1.3; }
 
-#content{
-  padding:16px;
-}
+#save-btn { width: 100%; padding: 14px 0; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--hdr2), var(--hdr1)); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; transition: all .25s; letter-spacing: .05em; }
+#save-btn.saved { background: linear-gradient(135deg, #16a34a, #15803d); }
 
-.card{
-  background:#fff;
-  border-radius:16px;
-  padding:14px 16px;
-  margin-bottom:14px;
-  box-shadow:0 2px 12px rgba(0,0,0,.06);
-}
+textarea { width: 100%; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #374151; resize: vertical; outline: none; }
+textarea:focus { border-color: var(--hdr2); }
 
-.card-form{
-  background:#fff;
-  border-radius:18px;
-  padding:20px 16px;
-  box-shadow:0 2px 16px rgba(0,0,0,.07);
-}
+#date-row { display: flex; align-items: center; gap: 12px; }
+#date-col { flex: 1; }
+#date-sublabel { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
+#date-input { border: none; font-size: 16px; font-weight: 700; color: #111827; background: transparent; outline: none; width: 100%; }
+#date-saved-badge { display: none; font-size: 11px; background: #dcfce7; color: #16a34a; border-radius: 8px; padding: 3px 8px; font-weight: 700; }
 
-.section{
-  margin-bottom:22px;
-}
+.cal-title { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+.cal-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.cal-cell { width: 34px; height: 34px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; border: 1px solid rgba(0,0,0,.06); }
+.cal-cell span { font-size: 8px; color: #6b7280; }
+.cal-legend { display: flex; gap: 10px; font-size: 11px; color: #6b7280; flex-wrap: wrap; margin-bottom: 20px; }
+.legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.1); vertical-align: middle; margin-right: 3px; }
 
-.section-title{
-  font-size:13px;
-  font-weight:800;
-  color:#374151;
-  margin-bottom:10px;
-  padding-left:10px;
-  border-left:3px solid #4a7c9e;
-}
+.entry-card { background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
+.entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.entry-date { font-weight: 700; font-size: 14px; color: #111827; }
+.entry-badge { border-radius: 8px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+.entry-times { display: flex; gap: 12px; font-size: 12px; color: #6b7280; margin-bottom: 6px; }
+.entry-row { font-size: 12px; color: #374151; margin-bottom: 4px; }
+.entry-memo { font-size: 12px; color: #6b7280; font-style: italic; margin-top: 4px; padding: 6px 10px; background: #f9fafb; border-radius: 8px; }
+.sum-title { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+.empty { text-align: center; color: #9ca3af; padding: 60px 0; font-size: 14px; }
 
-.intensity-row{
-  margin-bottom:10px;
-}
+#export-btn { width: 100%; padding: 14px 0; border-radius: 14px; border: 2px solid var(--hdr2); background: #fff; color: var(--hdr2); font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 14px; }
 
-.intensity-label{
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:6px;
-  font-weight:600;
-}
+#offline-banner { display: none; background: #fef3c7; color: #92400e; text-align: center; font-size: 12px; font-weight: 600; padding: 6px; }
+```
 
-.intensity-btns{
-  display:flex;
-  gap:6px;
-}
-
-.intensity-btn{
-  flex:1;
-  padding:8px 4px;
-  border-radius:10px;
-  border:2px solid transparent;
-  font-size:11px;
-  font-weight:500;
-}
-
-.chip-group{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-}
-
-.chip{
-  padding:6px 12px;
-  border-radius:20px;
-  border:2px solid #e5e7eb;
-  background:#f9fafb;
-  color:#6b7280;
-  font-size:12px;
-}
-
-.chip.on{
-  border-color:#4a7c9e;
-  background:#dbeafe;
-  color:#1e40af;
-  font-weight:700;
-}
-
-.chip.single.on{
-  border-color:#7c3aed;
-  background:#ede9fe;
-  color:#5b21b6;
-}
-
-textarea{
-  width:100%;
-  border:1.5px solid #e5e7eb;
-  border-radius:12px;
-  padding:10px 12px;
-  font-size:13px;
-  resize:vertical;
-}
-
-#save-btn{
-  width:100%;
-  padding:14px 0;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#4a7c9e,#2d5a78);
-  color:#fff;
-  font-size:15px;
-  font-weight:800;
-}
-
-.entry-card{
-  background:#fff;
-  border-radius:14px;
-  padding:14px 16px;
-  margin-bottom:10px;
-  border:1px solid #e5e7eb;
-}
-
-.entry-date{
-  font-weight:700;
-  font-size:14px;
-  margin-bottom:6px;
-}
-
-.entry-row{
-  font-size:12px;
-  color:#374151;
-  margin-bottom:4px;
-}
-
-.empty{
-  text-align:center;
-  color:#9ca3af;
-  padding:60px 0;
-}
-
-#date-input{
-  width:100%;
-  border:none;
-  font-size:16px;
-  font-weight:700;
-  background:transparent;
-}
-
-.hidden{
-  display:none;
-}
-</style>
+  </style>
 </head>
-
 <body>
+
+<div id="offline-banner">オフラインモード</div>
 
 <div id="header">
   <div id="header-sub">HEADACHE DIARY</div>
-  <div id="header-title">頭痛ダイアリー 🗓️</div>
-
+  <div id="header-title">頭痛ダイアリー</div>
   <div id="tabs">
-    <button class="tab-btn active" id="record-tab">📝 記録する</button>
-    <button class="tab-btn" id="summary-tab">📊 まとめ</button>
+    <button class="tab-btn active" onclick="showTab('record')">📝 記録する</button>
+    <button class="tab-btn" onclick="showTab('summary')">📊 まとめ</button>
   </div>
 </div>
 
-<div id="content">
-
-<div id="record-page">
-
-  <div class="card">
-    <input type="date" id="date-input">
-  </div>
-
-  <div class="card-form">
-
-    <div class="section">
-      <div class="section-title">痛みの程度</div>
-
-      <div class="intensity-row">
-        <div class="intensity-label">朝</div>
-        <div class="intensity-btns" id="morning-btns"></div>
-      </div>
-
-      <div class="intensity-row">
-        <div class="intensity-label">昼</div>
-        <div class="intensity-btns" id="afternoon-btns"></div>
-      </div>
-
-      <div class="intensity-row">
-        <div class="intensity-label">夜</div>
-        <div class="intensity-btns" id="evening-btns"></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">症状</div>
-      <div class="chip-group" id="symptoms"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">考えられる誘因</div>
-      <div class="chip-group" id="triggers"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">日常生活への影響</div>
-      <div class="chip-group" id="impacts"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">自由メモ</div>
-      <textarea id="memo" rows="3"></textarea>
-    </div>
-
-    <button id="save-btn">💾 この日の記録を保存</button>
-
-  </div>
-</div>
-
-<div id="summary-page" class="hidden">
-  <div id="summary-list"></div>
-</div>
-
-</div>
+<div id="content"></div>
 
 <script>
-const STORAGE_KEY = "headache_diary_v2";
+var IL = ["なし","軽度 ＋","中程度 ＋＋","重度 ＋＋＋"];
+var IC = ["#e8f5e9","#fff9c4","#ffe0b2","#ffcdd2"];
+var IT = ["#388e3c","#f9a825","#e65100","#c62828"];
+var BC = ["#e5e7eb","#fde68a","#fdba74","#fca5a5"];
 
-const INTENSITY_LABELS = [
-  "なし",
-  "軽度 ＋",
-  "中程度 ＋＋",
-  "重度 ＋＋＋"
+var SYMPTOMS = [
+  {id:"throbbing",label:"💓 脈打つ痛み"},
+  {id:"heavy",label:"🪨 重い痛み"},
+  {id:"nausea",label:"🤢 吐き気・嘔吐"},
+  {id:"light",label:"💡 光過敏"},
+  {id:"sound",label:"🔊 音過敏"},
+  {id:"aura",label:"✨ 前兆あり"}
+];
+var MEDS = [
+  {id:"loxonin",label:"ロキソニン"},
+  {id:"bufferin",label:"バファリン"},
+  {id:"imigran",label:"イミグラン"},
+  {id:"zomig",label:"ゾーミック"},
+  {id:"maxalt",label:"マクサルト"},
+  {id:"ibu",label:"イブ"},
+  {id:"alinamin",label:"アリナミン"},
+  {id:"yunker",label:"ユンケル"},
+  {id:"other",label:"その他"}
+];
+var TIMING = [
+  {id:"morning",label:"🌅 朝"},
+  {id:"afternoon",label:"☀️ 昼"},
+  {id:"evening",label:"🌙 夜"}
+];
+var EFFECTS = [
+  {id:"much_better",label:"かなり良くなった",color:"#16a34a",bg:"#dcfce7"},
+  {id:"little_better",label:"少し良くなった",color:"#ca8a04",bg:"#fef9c3"},
+  {id:"no_change",label:"変わらない",color:"#9ca3af",bg:"#f3f4f6"}
+];
+var TRIGGERS = [
+  {id:"sleep",label:"睡眠不足"},
+  {id:"stress",label:"ストレス"},
+  {id:"weather",label:"天気・気圧"},
+  {id:"alcohol",label:"飲酒"},
+  {id:"period",label:"生理"},
+  {id:"screen",label:"画面疲れ"},
+  {id:"skip_meal",label:"食事抜き"},
+  {id:"unknown",label:"不明"}
+];
+var IMPACTS = [
+  {id:"none",label:"影響なし"},
+  {id:"slight",label:"少し支障あり"},
+  {id:"moderate",label:"かなり支障あり"},
+  {id:"severe",label:"寝込んだ"}
 ];
 
-const INTENSITY_COLORS = [
-  "#e8f5e9",
-  "#fff9c4",
-  "#ffe0b2",
-  "#ffcdd2"
-];
+var SK = "headache_diary_v1";
+var tab = "record";
+var selDate = todayStr();
+var entries = load();
+var entry = clone(entries[selDate] || empty());
 
-const INTENSITY_TEXT = [
-  "#388e3c",
-  "#f9a825",
-  "#e65100",
-  "#c62828"
-];
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function empty() { return {morning:0,afternoon:0,evening:0,symptoms:[],medEntries:[],triggers:[],impact:"",memo:""}; }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function load() { try { return JSON.parse(localStorage.getItem(SK)||"{}"); } catch(e) { return {}; } }
+function save() { try { localStorage.setItem(SK,JSON.stringify(entries)); } catch(e) {} }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function find(arr,id) { for(var i=0;i<arr.length;i++) if(arr[i].id===id) return arr[i]; return null; }
 
-const SYMPTOMS = [
-  "💓 脈打つ痛み",
-  "🪨 重い痛み",
-  "🤢 吐き気・嘔吐",
-  "💡 光過敏",
-  "🔊 音過敏",
-  "✨ 前兆あり"
-];
-
-const TRIGGERS = [
-  "睡眠不足",
-  "ストレス",
-  "天気・気圧",
-  "飲酒",
-  "生理",
-  "画面疲れ",
-  "食事抜き",
-  "不明"
-];
-
-const IMPACTS = [
-  "影響なし",
-  "少し支障あり",
-  "かなり支障あり",
-  "寝込んだ"
-];
-
-let entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-
-let current = {
-  morning:0,
-  afternoon:0,
-  evening:0,
-  symptoms:[],
-  triggers:[],
-  impact:"",
-  memo:""
-};
-
-const today = new Date().toISOString().slice(0,10);
-const dateInput = document.getElementById("date-input");
-dateInput.value = today;
-
-function saveStorage(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+function render() {
+  document.getElementById("content").innerHTML = tab==="record" ? recHTML() : sumHTML();
+  bind();
 }
 
-function renderIntensity(id, field){
-  const wrap = document.getElementById(id);
-  wrap.innerHTML = "";
+function recHTML() {
+  var h = "";
+  h += "<div class='card'><div id='date-row'>";
+  h += "<span style='font-size:20px'>📅</span><div id='date-col'>";
+  h += "<div id='date-sublabel'>記録する日付</div>";
+  h += "<input type='date' id='date-input' value='"+esc(selDate)+"'></div>";
+  h += "<span id='date-saved-badge' style='"+(entries[selDate]?"display:inline":"")+"'>記録済</span>";
+  h += "</div></div>";
 
-  INTENSITY_LABELS.forEach((label,index)=>{
-    const btn = document.createElement("button");
+  h += "<div class='card-form'>";
 
-    btn.className = "intensity-btn";
+  // 痛みの程度
+  h += "<div class='section'><div class='section-title'>痛みの程度</div>";
+  h += intRow("morning","朝",entry.morning);
+  h += intRow("afternoon","昼",entry.afternoon);
+  h += intRow("evening","夜",entry.evening);
+  h += "</div>";
 
-    btn.style.background = INTENSITY_COLORS[index];
-    btn.style.color = INTENSITY_TEXT[index];
-
-    if(current[field] === index){
-      btn.style.borderColor = INTENSITY_TEXT[index];
-      btn.style.fontWeight = "800";
-    }
-
-    btn.textContent = label;
-
-    btn.onclick = ()=>{
-      current[field] = index;
-      renderAll();
-    };
-
-    wrap.appendChild(btn);
-  });
-}
-
-function renderChips(id,list,field,single=false){
-  const wrap = document.getElementById(id);
-  wrap.innerHTML = "";
-
-  list.forEach(item=>{
-    const btn = document.createElement("button");
-
-    btn.className = "chip";
-
-    if(single){
-      btn.classList.add("single");
-
-      if(current[field] === item){
-        btn.classList.add("on");
-      }
-
-      btn.onclick = ()=>{
-        current[field] = item;
-        renderAll();
-      };
-
-    }else{
-
-      if(current[field].includes(item)){
-        btn.classList.add("on");
-      }
-
-      btn.onclick = ()=>{
-        if(current[field].includes(item)){
-          current[field] = current[field].filter(v=>v!==item);
-        }else{
-          current[field].push(item);
-        }
-
-        renderAll();
-      };
-    }
-
-    btn.textContent = item;
-
-    wrap.appendChild(btn);
-  });
-}
-
-function renderSummary(){
-
-  const wrap = document.getElementById("summary-list");
-
-  const dates = Object.keys(entries).sort().reverse();
-
-  if(dates.length===0){
-    wrap.innerHTML = '<div class="card empty">まだ記録がありません</div>';
-    return;
+  // 症状
+  h += "<div class='section'><div class='section-title'>症状</div><div class='chip-group'>";
+  for(var i=0;i<SYMPTOMS.length;i++) {
+    var s=SYMPTOMS[i]; var on=entry.symptoms.indexOf(s.id)>=0;
+    h += "<button class='chip"+(on?" on":"")+"' data-chip='symptom' data-id='"+s.id+"'>"+s.label+"</button>";
   }
+  h += "</div></div>";
 
-  wrap.innerHTML = "";
-
-  dates.forEach(date=>{
-
-    const e = entries[date];
-
-    const max = Math.max(
-      e.morning,
-      e.afternoon,
-      e.evening
-    );
-
-    const card = document.createElement("div");
-
-    card.className = "entry-card";
-
-    card.style.borderLeft =
-      "4px solid " + INTENSITY_TEXT[max];
-
-    card.innerHTML = `
-      <div class="entry-date">${date}</div>
-
-      <div class="entry-row">
-        朝: ${INTENSITY_LABELS[e.morning]}
-      </div>
-
-      <div class="entry-row">
-        昼: ${INTENSITY_LABELS[e.afternoon]}
-      </div>
-
-      <div class="entry-row">
-        夜: ${INTENSITY_LABELS[e.evening]}
-      </div>
-
-      <div class="entry-row">
-        症状: ${e.symptoms.join("・") || "なし"}
-      </div>
-
-      <div class="entry-row">
-        誘因: ${e.triggers.join("・") || "なし"}
-      </div>
-
-      <div class="entry-row">
-        日常への影響: ${e.impact || "なし"}
-      </div>
-
-      <div class="entry-row">
-        メモ: ${e.memo || "なし"}
-      </div>
-    `;
-
-    wrap.appendChild(card);
-
-  });
-
-}
-
-function renderAll(){
-
-  renderIntensity("morning-btns","morning");
-  renderIntensity("afternoon-btns","afternoon");
-  renderIntensity("evening-btns","evening");
-
-  renderChips("symptoms",SYMPTOMS,"symptoms");
-  renderChips("triggers",TRIGGERS,"triggers");
-  renderChips("impacts",IMPACTS,"impact",true);
-
-  document.getElementById("memo").value = current.memo;
-
-  renderSummary();
-}
-
-document.getElementById("memo").addEventListener("input",e=>{
-  current.memo = e.target.value;
-});
-
-document.getElementById("save-btn").onclick = ()=>{
-
-  const date = dateInput.value;
-
-  entries[date] = JSON.parse(JSON.stringify(current));
-
-  saveStorage();
-
-  alert("保存しました！");
-};
-
-document.getElementById("record-tab").onclick = ()=>{
-
-  document.getElementById("record-page").classList.remove("hidden");
-  document.getElementById("summary-page").classList.add("hidden");
-
-  document.getElementById("record-tab").classList.add("active");
-  document.getElementById("summary-tab").classList.remove("active");
-};
-
-document.getElementById("summary-tab").onclick = ()=>{
-
-  document.getElementById("summary-page").classList.remove("hidden");
-  document.getElementById("record-page").classList.add("hidden");
-
-  document.getElementById("summary-tab").classList.add("active");
-  document.getElementById("record-tab").classList.remove("active");
-
-  renderSummary();
-};
-
-dateInput.addEventListener("change",()=>{
-
-  const saved = entries[dateInput.value];
-
-  if(saved){
-    current = JSON.parse(JSON.stringify(saved));
-  }else{
-    current = {
-      morning:0,
-      afternoon:0,
-      evening:0,
-      symptoms:[],
-      triggers:[],
-      impact:"",
-      memo:""
-    };
+  // 服薬
+  h += "<div class='section'><div class='section-title'>服薬</div>";
+  h += "<div class='chip-group' style='margin-bottom:14px'>";
+  for(var i=0;i<MEDS.length;i++) {
+    var m=MEDS[i]; var on=false;
+    for(var j=0;j<entry.medEntries.length;j++) if(entry.medEntries[j].medId===m.id){on=true;break;}
+    h += "<button class='chip"+(on?" on":"")+"' data-chip='med' data-id='"+m.id+"'>"+(on?"✓ ":"")+esc(m.label)+"</button>";
   }
+  h += "</div><div id='med-cards'>"+medCardsHTML()+"</div></div>";
 
-  renderAll();
-});
+  // 誘因
+  h += "<div class='section'><div class='section-title'>考えられる誘因</div><div class='chip-group'>";
+  for(var i=0;i<TRIGGERS.length;i++) {
+    var t=TRIGGERS[i]; var on=entry.triggers.indexOf(t.id)>=0;
+    h += "<button class='chip"+(on?" on":"")+"' data-chip='trigger' data-id='"+t.id+"'>"+t.label+"</button>";
+  }
+  h += "</div></div>";
 
-renderAll();
+  // 影響
+  h += "<div class='section'><div class='section-title'>日常生活への影響</div><div class='chip-group'>";
+  for(var i=0;i<IMPACTS.length;i++) {
+    var im=IMPACTS[i]; var on=entry.impact===im.id;
+    h += "<button class='chip single"+(on?" on":"")+"' data-chip='impact' data-id='"+im.id+"'>"+im.label+"</button>";
+  }
+  h += "</div></div>";
+
+  // メモ
+  h += "<div class='section'><div class='section-title'>自由メモ</div>";
+  h += "<textarea id='memo-input' rows='3' placeholder='その他気になること、医師への伝言など...'>"+esc(entry.memo)+"</textarea>";
+
+h += “</div>”;
+
+h += “<button id='save-btn' onclick='doSave()'>💾 この日の記録を保存</button>”;
+h += “</div><div style='height:20px'></div>”;
+return h;
+}
+
+function intRow(field,label,val) {
+var h = “<div class='intensity-row'><div class='intensity-label'>”+label+”</div><div class='intensity-btns'>”;
+for(var i=0;i<IL.length;i++) {
+var on=val===i;
+h += “<button class='intensity-btn' style='background:"+IC[i]+";color:"+IT[i]+";border-color:"+(on?IT[i]:"transparent")+";font-weight:"+(on?"800":"500")+"' data-int='"+field+"' data-val='"+i+"'>”+IL[i]+”</button>”;
+}
+h += “</div></div>”;
+return h;
+}
+
+function medCardsHTML() {
+var h=””;
+for(var i=0;i<entry.medEntries.length;i++) h+=medCardHTML(entry.medEntries[i]);
+return h;
+}
+
+function medCardHTML(m) {
+var med=find(MEDS,m.medId); var label=med?med.label:m.medId;
+var h=”<div class='med-card' id='mc-"+m.medId+"'>”;
+h+=”<div class='med-card-header'><span class='med-card-title'>💊 “+esc(label)+”</span>”;
+h+=”<button class='med-remove' data-rm='"+m.medId+"'>×</button></div>”;
+h+=”<div class='sub-label'>服薬タイミング</div><div class='timing-btns'>”;
+for(var i=0;i<TIMING.length;i++) {
+var t=TIMING[i]; var on=m.timing.indexOf(t.id)>=0;
+h+=”<button class='timing-btn"+(on?" on":"")+"' data-tim='"+m.medId+"' data-tid='"+t.id+"'>”+t.label+”</button>”;
+}
+h+=”</div><div class='sub-label'>服薬後の効果</div><div class='effect-btns'>”;
+for(var i=0;i<EFFECTS.length;i++) {
+var ef=EFFECTS[i]; var on=m.effect===ef.id;
+h+=”<button class='effect-btn' style='border-color:"+(on?ef.color:"#e5e7eb")+";background:"+(on?ef.bg:"#fff")+";color:"+(on?ef.color:"#6b7280")+";font-weight:"+(on?"800":"400")+"' data-eff='"+m.medId+"' data-eid='"+ef.id+"'>”+ef.label+”</button>”;
+}
+h+=”</div></div>”;
+return h;
+}
+
+function sumHTML() {
+var dates=Object.keys(entries).sort();
+var h=”<div class='card-form'>”;
+if(!dates.length) {
+h+=”<div class='empty'>まだ記録がありません</div>”;
+} else {
+h+=”<div class='cal-title'>📅 カレンダー概要</div><div class='cal-grid'>”;
+for(var i=0;i<dates.length;i++) {
+var d=dates[i]; var e=entries[d];
+var mx=Math.max(e.morning,e.afternoon,e.evening);
+h+=”<div class='cal-cell' style='background:"+BC[mx]+";color:"+(mx===0?"#9ca3af":"#374151")+"'>”+d.slice(8)+”<span>”+d.slice(5,7)+“月</span></div>”;
+}
+h+=”</div><div class='cal-legend'>”;
+for(var i=0;i<IL.length;i++) h+=”<span><span class='legend-dot' style='background:"+BC[i]+"'></span>”+IL[i]+”</span>”;
+h+=”</div><div class='sum-title'>📋 記録一覧</div>”;
+for(var di=dates.length-1;di>=0;di–) {
+var d=dates[di]; var e=entries[d];
+var mx=Math.max(e.morning,e.afternoon,e.evening);
+h+=”<div class='entry-card' style='border-left:4px solid "+IT[mx]+"'>”;
+h+=”<div class='entry-header'><span class='entry-date'>”+esc(d)+”</span>”;
+h+=”<span class='entry-badge' style='background:"+IC[mx]+";color:"+IT[mx]+"'>最大: “+IL[mx]+”</span></div>”;
+h+=”<div class='entry-times'><span>朝 “+IL[e.morning]+”</span><span>昼 “+IL[e.afternoon]+”</span><span>夜 “+IL[e.evening]+”</span></div>”;
+if(e.symptoms&&e.symptoms.length){var sl=[];for(var i=0;i<e.symptoms.length;i++){var s=find(SYMPTOMS,e.symptoms[i]);if(s)sl.push(s.label);}h+=”<div class='entry-row'>症状: “+esc(sl.join(”・”))+”</div>”;}
+if(e.medEntries&&e.medEntries.length){var ml=[];for(var i=0;i<e.medEntries.length;i++){var m=e.medEntries[i];var med=find(MEDS,m.medId);var nm=med?med.label:m.medId;var tl=[];for(var j=0;j<m.timing.length;j++){var t=find(TIMING,m.timing[j]);if(t)tl.push(t.label);}var ef=find(EFFECTS,m.effect);var p=nm+(tl.length?”（”+tl.join(”・”)+”）”:””)+(ef?“→”+ef.label:””);ml.push(p);}h+=”<div class='entry-row'>薬: “+esc(ml.join(” / “))+”</div>”;}
+if(e.triggers&&e.triggers.length){var tl=[];for(var i=0;i<e.triggers.length;i++){var t=find(TRIGGERS,e.triggers[i]);if(t)tl.push(t.label);}h+=”<div class='entry-row'>誘因: “+esc(tl.join(”・”))+”</div>”;}
+if(e.impact){var im=find(IMPACTS,e.impact);if(im)h+=”<div class='entry-row'>日常への影響: “+esc(im.label)+”</div>”;}
+if(e.memo)h+=”<div class='entry-memo'>”+esc(e.memo)+”</div>”;
+h+=”</div>”;
+}
+}
+h+=”</div><button id='export-btn' onclick='doExport()'>📄 テキストに書き出す（医師へ）</button>”;
+h+=”<div style='height:20px'></div>”;
+return h;
+}
+
+function bind() {
+var di=document.getElementById(“date-input”);
+if(di) di.addEventListener(“change”,function(e){selDate=e.target.value;entry=clone(entries[selDate]||empty());render();});
+
+var ib=document.querySelectorAll(”[data-int]”);
+for(var i=0;i<ib.length;i++)(function(b){b.addEventListener(“click”,function(){entry[b.dataset.int]=parseInt(b.dataset.val,10);refreshInt();});})(ib[i]);
+
+var cb=document.querySelectorAll(”[data-chip]”);
+for(var i=0;i<cb.length;i++)(function(b){b.addEventListener(“click”,function(){
+var id=b.dataset.id; var chip=b.dataset.chip;
+if(chip===“symptom”){var idx=entry.symptoms.indexOf(id);if(idx>=0)entry.symptoms.splice(idx,1);else entry.symptoms.push(id);b.classList.toggle(“on”);}
+else if(chip===“trigger”){var idx=entry.triggers.indexOf(id);if(idx>=0)entry.triggers.splice(idx,1);else entry.triggers.push(id);b.classList.toggle(“on”);}
+else if(chip===“impact”){entry.impact=entry.impact===id?””:id;var all=document.querySelectorAll(”[data-chip=‘impact’]”);for(var j=0;j<all.length;j++)all[j].classList.toggle(“on”,all[j].dataset.id===entry.impact);}
+else if(chip===“med”){
+var ex=false;for(var j=0;j<entry.medEntries.length;j++)if(entry.medEntries[j].medId===id){ex=true;break;}
+var med=find(MEDS,id); var lbl=med?med.label:id;
+if(ex){entry.medEntries=entry.medEntries.filter(function(m){return m.medId!==id;});b.classList.remove(“on”);b.textContent=lbl;}
+else{entry.medEntries.push({medId:id,timing:[],effect:””});b.classList.add(“on”);b.textContent=“✓ “+lbl;}
+document.getElementById(“med-cards”).innerHTML=medCardsHTML();bindMed();
+}
+});})(cb[i]);
+
+var memo=document.getElementById(“memo-input”);
+if(memo) memo.addEventListener(“input”,function(e){entry.memo=e.target.value;});
+bindMed();
+}
+
+function bindMed() {
+var rb=document.querySelectorAll(”[data-rm]”);
+for(var i=0;i<rb.length;i++)(function(b){b.addEventListener(“click”,function(){
+var id=b.dataset.rm;
+entry.medEntries=entry.medEntries.filter(function(m){return m.medId!==id;});
+var chips=document.querySelectorAll(”[data-chip=‘med’]”);
+for(var j=0;j<chips.length;j++)if(chips[j].dataset.id===id){chips[j].classList.remove(“on”);var med=find(MEDS,id);chips[j].textContent=med?med.label:id;}
+document.getElementById(“med-cards”).innerHTML=medCardsHTML();bindMed();
+});})(rb[i]);
+
+var tb=document.querySelectorAll(”[data-tim]”);
+for(var i=0;i<tb.length;i++)(function(b){b.addEventListener(“click”,function(){
+var id=b.dataset.tim; var tid=b.dataset.tid;
+for(var j=0;j<entry.medEntries.length;j++)if(entry.medEntries[j].medId===id){var m=entry.medEntries[j];var idx=m.timing.indexOf(tid);if(idx>=0)m.timing.splice(idx,1);else m.timing.push(tid);break;}
+b.classList.toggle(“on”);
+});})(tb[i]);
+
+var eb=document.querySelectorAll(”[data-eff]”);
+for(var i=0;i<eb.length;i++)(function(b){b.addEventListener(“click”,function(){
+var id=b.dataset.eff; var eid=b.dataset.eid;
+for(var j=0;j<entry.medEntries.length;j++)if(entry.medEntries[j].medId===id){entry.medEntries[j].effect=entry.medEntries[j].effect===eid?””:eid;break;}
+var card=document.getElementById(“mc-”+id);
+if(card){var all=card.querySelectorAll(”[data-eff]”);for(var k=0;k<all.length;k++){var bt=all[k];var on=bt.dataset.eid===entry.medEntries.find?false:false;for(var j=0;j<entry.medEntries.length;j++)if(entry.medEntries[j].medId===id){on=entry.medEntries[j].effect===bt.dataset.eid;break;}var ef=find(EFFECTS,bt.dataset.eid);if(!ef)continue;bt.style.borderColor=on?ef.color:”#e5e7eb”;bt.style.background=on?ef.bg:”#fff”;bt.style.color=on?ef.color:”#6b7280”;bt.style.fontWeight=on?“800”:“400”;}}
+});})(eb[i]);
+}
+
+function refreshInt() {
+var fields=[“morning”,“afternoon”,“evening”];
+for(var f=0;f<fields.length;f++){var btns=document.querySelectorAll(”[data-int=’”+fields[f]+”’]”);for(var i=0;i<btns.length;i++){var on=entry[fields[f]]===i;btns[i].style.borderColor=on?IT[i]:“transparent”;btns[i].style.fontWeight=on?“800”:“500”;}}
+}
+
+function doSave() {
+entries[selDate]=clone(entry);save();
+var btn=document.getElementById(“save-btn”);
+btn.textContent=“✅ 保存しました！”;btn.classList.add(“saved”);
+var badge=document.getElementById(“date-saved-badge”);if(badge)badge.style.display=“inline”;
+setTimeout(function(){btn.textContent=“💾 この日の記録を保存”;btn.classList.remove(“saved”);},2000);
+}
+
+function doExport() {
+var lines=[“頭痛ダイアリー エクスポート”,””];
+var dates=Object.keys(entries).sort();
+for(var di=0;di<dates.length;di++){
+var d=dates[di]; var e=entries[d];
+lines.push(“■ “+d);
+lines.push(”  痛みの程度: 朝=”+IL[e.morning]+” 昼=”+IL[e.afternoon]+” 夜=”+IL[e.evening]);
+if(e.symptoms&&e.symptoms.length){var sl=[];for(var i=0;i<e.symptoms.length;i++){var s=find(SYMPTOMS,e.symptoms[i]);if(s)sl.push(s.label);}lines.push(”  症状: “+sl.join(”、”));}
+if(e.medEntries&&e.medEntries.length){var ml=[];for(var i=0;i<e.medEntries.length;i++){var m=e.medEntries[i];var med=find(MEDS,m.medId);var nm=med?med.label:m.medId;var tl=[];for(var j=0;j<m.timing.length;j++){var t=find(TIMING,m.timing[j]);if(t)tl.push(t.label);}var ef=find(EFFECTS,m.effect);ml.push(nm+(tl.length?”（”+tl.join(”・”)+”）”:””)+(ef?“→”+ef.label:””));}lines.push(”  服薬: “+ml.join(” / “));}
+if(e.triggers&&e.triggers.length){var tl=[];for(var i=0;i<e.triggers.length;i++){var t=find(TRIGGERS,e.triggers[i]);if(t)tl.push(t.label);}lines.push(”  誘因: “+tl.join(”、”));}
+if(e.impact){var im=find(IMPACTS,e.impact);if(im)lines.push(”  日常への影響: “+im.label);}
+if(e.memo)lines.push(”  メモ: “+e.memo);
+lines.push(””);
+}
+var blob=new Blob([lines.join(”\n”)],{type:“text/plain;charset=utf-8”});
+var url=URL.createObjectURL(blob);var a=document.createElement(“a”);a.href=url;a.download=“headache_diary.txt”;a.click();URL.revokeObjectURL(url);
+}
+
+function showTab(t) {
+tab=t;
+var btns=document.querySelectorAll(”.tab-btn”);
+btns[0].classList.toggle(“active”,t===“record”);
+btns[1].classList.toggle(“active”,t===“summary”);
+render();
+}
+
+window.addEventListener(“online”,function(){document.getElementById(“offline-banner”).style.display=“none”;});
+window.addEventListener(“offline”,function(){document.getElementById(“offline-banner”).style.display=“block”;});
+
+render();
 </script>
 
 </body>
