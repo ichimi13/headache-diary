@@ -1,9 +1,4 @@
----
-layout: null
----
-
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -165,230 +160,225 @@ function buildRec(){
   // メモ
   h+="<div class='card'><div class='stitle'>自由メモ</div>";
   h+="<textarea id='mi' rows='3' placeholder='気になること、医師への伝言など...'>"+x(cur.memo)+"</textarea>";
+  h+="</div>";
 
-h+=”</div>”;
-
-h+=”<button id='sbtn' onclick='doSave()'>この日の記録を保存</button>”;
-h+=”<div style='height:20px'></div>”;
-return h;
+  h+="<button id='sbtn' onclick='doSave()'>この日の記録を保存</button>";
+  h+="<div style='height:20px'></div>";
+  return h;
 }
 
 function irow(f,lbl,val){
-var h=”<div style='margin-bottom:7px'>”;
-h+=”<div class='ilbl'>”+lbl+”</div><div class='irow'>”;
-for(var i=0;i<ILAB.length;i++){
-var on=val===i;
-h+=”<button class=‘ibtn’ style=‘background:”+ICOL[i]+”;color:”+ITXT[i]+”;border-color:”+(on?ITXT[i]:“transparent”)+”;font-weight:”+(on?“800”:“500”)+”’”;
-h+=” onclick=‘sInt("”+f+”",”+i+”)’>”+ILAB[i]+”</button>”;
-}
-h+=”</div></div>”;
-return h;
+  var h="<div style='margin-bottom:7px'>";
+  h+="<div class='ilbl'>"+lbl+"</div><div class='irow'>";
+  for(var i=0;i<ILAB.length;i++){
+    var on=val===i;
+    h+="<button class='ibtn' style='background:"+ICOL[i]+";color:"+ITXT[i]+";border-color:"+(on?ITXT[i]:"transparent")+";font-weight:"+(on?"800":"500")+"'";
+    h+=" onclick='sInt(\""+f+"\","+i+")'>"+ILAB[i]+"</button>";
+  }
+  h+="</div></div>";
+  return h;
 }
 
 function buildMC(){
-var h=””;
-for(var i=0;i<cur.med.length;i++){
-var m=cur.med[i];
-h+=”<div class='mcard' id='mc"+m.id+"'>”;
-h+=”<div class='mcard-top'>”;
-h+=”<span class='mcard-name'>”+lbl(MED,m.id)+”</span>”;
-h+=”<button class='mdel' onclick='dMed(\""+m.id+"\")'>×</button>”;
-h+=”</div>”;
-h+=”<div class='slbl'>服薬タイミング</div><div class='trow'>”;
-for(var j=0;j<TIM.length;j++){
-var on=m.tim.indexOf(TIM[j][0])>=0;
-h+=”<button class='tbtn"+(on?" on":"")+"' onclick='tTim(\""+m.id+"\",\""+TIM[j][0]+"\",this)'>”+TIM[j][1]+”</button>”;
-}
-h+=”</div>”;
-h+=”<div class='slbl'>服薬後の効果</div><div class='erow'>”;
-for(var j=0;j<EFF.length;j++){
-var on=m.eff===EFF[j][0];
-h+=”<button class=‘ebtn’ id=‘eb”+m.id+EFF[j][0]+”’”;
-h+=” style=‘border-color:”+(on?EFF[j][2]:”#d1d5db”)+”;background:”+(on?EFF[j][3]:”#fff”)+”;color:”+(on?EFF[j][2]:”#6b7280”)+”;font-weight:”+(on?“800”:“400”)+”’”;
-h+=” onclick=‘sEff("”+m.id+”","”+EFF[j][0]+”")’>”+EFF[j][1]+”</button>”;
-}
-h+=”</div></div>”;
-}
-return h;
+  var h="";
+  for(var i=0;i<cur.med.length;i++){
+    var m=cur.med[i];
+    h+="<div class='mcard' id='mc"+m.id+"'>";
+    h+="<div class='mcard-top'>";
+    h+="<span class='mcard-name'>"+lbl(MED,m.id)+"</span>";
+    h+="<button class='mdel' onclick='dMed(\""+m.id+"\")'>&times;</button>";
+    h+="</div>";
+    h+="<div class='slbl'>服薬タイミング</div><div class='trow'>";
+    for(var j=0;j<TIM.length;j++){
+      var on=m.tim.indexOf(TIM[j][0])>=0;
+      h+="<button class='tbtn"+(on?" on":"")+"' onclick='tTim(\""+m.id+"\",\""+TIM[j][0]+"\",this)'>"+TIM[j][1]+"</button>";
+    }
+    h+="</div>";
+    h+="<div class='slbl'>服薬後の効果</div><div class='erow'>";
+    for(var j=0;j<EFF.length;j++){
+      var on=m.eff===EFF[j][0];
+      h+="<button class='ebtn' id='eb"+m.id+EFF[j][0]+"'";
+      h+=" style='border-color:"+(on?EFF[j][2]:"#d1d5db")+";background:"+(on?EFF[j][3]:"#fff")+";color:"+(on?EFF[j][2]:"#6b7280")+";font-weight:"+(on?"800":"400")+"'";
+      h+=" onclick='sEff(\""+m.id+"\",\""+EFF[j][0]+"\")'>"+EFF[j][1]+"</button>";
+    }
+    h+="</div></div>";
+  }
+  return h;
 }
 
 function buildSum(){
-var dates=Object.keys(DB).sort();
-var h=””;
-if(dates.length===0){
-h+=”<div class='card' style='text-align:center;padding:50px 0;color:#9ca3af;font-size:14px'>まだ記録がありません</div>”;
-} else {
-h+=”<div class='card'><div class='stitle' style='margin-bottom:10px'>カレンダー</div><div class='cgrid'>”;
-for(var i=0;i<dates.length;i++){
-var d=dates[i];var e=DB[d];
-var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
-h+=”<div class='ccell' style='background:"+BCOL[mx]+";color:"+(mx===0?"#94a3b8":"#374151")+"'>”;
-h+=d.slice(8)+”<small>”+d.slice(5,7)+“月</small></div>”;
-}
-h+=”</div><div class='lgd'>”;
-for(var i=0;i<ILAB.length;i++)h+=”<span><span class='ldot' style='background:"+BCOL[i]+"'></span>”+ILAB[i]+”</span>”;
-h+=”</div></div>”;
-
-```
-h+="<div class='card'><div class='stitle' style='margin-bottom:10px'>記録一覧</div>";
-for(var di=dates.length-1;di>=0;di--){
-  var d=dates[di];var e=DB[d];
-  var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
-  h+="<div class='rcard' style='border-left-color:"+ITXT[mx]+"'>";
-  h+="<div class='rtop'><span class='rdate'>"+x(d)+"</span>";
-  h+="<span class='rbadge' style='background:"+ICOL[mx]+";color:"+ITXT[mx]+"'>最大: "+ILAB[mx]+"</span></div>";
-  h+="<div class='rtimes'>朝 "+ILAB[e.mo||0]+" / 昼 "+ILAB[e.af||0]+" / 夜 "+ILAB[e.ev||0]+"</div>";
-
-  if(e.sym&&e.sym.length){
-    var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));
-    h+="<div class='rrow'>症状: "+x(sl.join("・"))+"</div>";
-  }
-  if(e.med&&e.med.length){
-    var ml=[];
-    for(var i=0;i<e.med.length;i++){
-      var m=e.med[i];
-      var p=lbl(MED,m.id);
-      if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+="("+tl.join("・")+")";}
-      if(m.eff)p+=" → "+lbl(EFF,m.eff);
-      ml.push(p);
+  var dates=Object.keys(DB).sort();
+  var h="";
+  if(dates.length===0){
+    h+="<div class='card' style='text-align:center;padding:50px 0;color:#9ca3af;font-size:14px'>まだ記録がありません</div>";
+  } else {
+    h+="<div class='card'><div class='stitle' style='margin-bottom:10px'>カレンダー</div><div class='cgrid'>";
+    for(var i=0;i<dates.length;i++){
+      var d=dates[i];var e=DB[d];
+      var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
+      h+="<div class='ccell' style='background:"+BCOL[mx]+";color:"+(mx===0?"#94a3b8":"#374151")+"'>";
+      h+=d.slice(8)+"<small>"+d.slice(5,7)+"月</small></div>";
     }
-    h+="<div class='rrow'>薬: "+x(ml.join(" / "))+"</div>";
-  }
-  if(e.trg&&e.trg.length){
-    var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));
-    h+="<div class='rrow'>誘因: "+x(tl.join("・"))+"</div>";
-  }
-  if(e.imp)h+="<div class='rrow'>影響: "+x(lbl(IMP,e.imp))+"</div>";
-  if(e.memo)h+="<div class='rmemo'>"+x(e.memo)+"</div>";
-  h+="</div>";
-}
-h+="</div>";
-```
+    h+="</div><div class='lgd'>";
+    for(var i=0;i<ILAB.length;i++)h+="<span><span class='ldot' style='background:"+BCOL[i]+"'></span>"+ILAB[i]+"</span>";
+    h+="</div></div>";
 
-}
-h+=”<button id='ebtn' onclick='doExp()'>テキストに書き出す（医師へ）</button>”;
-h+=”<div style='height:20px'></div>”;
-return h;
+    h+="<div class='card'><div class='stitle' style='margin-bottom:10px'>記録一覧</div>";
+    for(var di=dates.length-1;di>=0;di--){
+      var d=dates[di];var e=DB[d];
+      var mx=Math.max(e.mo||0,e.af||0,e.ev||0);
+      h+="<div class='rcard' style='border-left-color:"+ITXT[mx]+"'>";
+      h+="<div class='rtop'><span class='rdate'>"+x(d)+"</span>";
+      h+="<span class='rbadge' style='background:"+ICOL[mx]+";color:"+ITXT[mx]+"'>最大: "+ILAB[mx]+"</span></div>";
+      h+="<div class='rtimes'>朝 "+ILAB[e.mo||0]+" / 昼 "+ILAB[e.af||0]+" / 夜 "+ILAB[e.ev||0]+"</div>";
+
+      if(e.sym&&e.sym.length){
+        var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));
+        h+="<div class='rrow'>症状: "+x(sl.join("・"))+"</div>";
+      }
+      if(e.med&&e.med.length){
+        var ml=[];
+        for(var i=0;i<e.med.length;i++){
+          var m=e.med[i];
+          var p=lbl(MED,m.id);
+          if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+="("+tl.join("・")+")";}
+          if(m.eff)p+=" → "+lbl(EFF,m.eff);
+          ml.push(p);
+        }
+        h+="<div class='rrow'>薬: "+x(ml.join(" / "))+"</div>";
+      }
+      if(e.trg&&e.trg.length){
+        var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));
+        h+="<div class='rrow'>誘因: "+x(tl.join("・"))+"</div>";
+      }
+      if(e.imp)h+="<div class='rrow'>影響: "+x(lbl(IMP,e.imp))+"</div>";
+      if(e.memo)h+="<div class='rmemo'>"+x(e.memo)+"</div>";
+      h+="</div>";
+    }
+    h+="</div>";
+  }
+  h+="<button id='ebtn' onclick='doExp()'>テキストに書き出す（医師へ）</button>";
+  h+="<div style='height:20px'></div>";
+  return h;
 }
 
-// — アクション —
+// --- アクション ---
 function sInt(f,v){
-cur[f]=v;
-var btns=document.querySelectorAll(”[onclick*=‘sInt("”+f+”"’]”);
-// カード2番目の該当行を探してスタイル更新
-var rows=document.querySelectorAll(”.irow”);
-var fmap={mo:0,af:1,ev:2};
-var row=rows[fmap[f]];
-if(row){
-var bs=row.querySelectorAll(”.ibtn”);
-for(var i=0;i<bs.length;i++){
-var on=i===v;
-bs[i].style.borderColor=on?ITXT[v]:“transparent”;
-bs[i].style.fontWeight=on?“800”:“500”;
-}
-}
+  cur[f]=v;
+  var btns=document.querySelectorAll("[onclick*='sInt(\""+f+"\"']");
+  // カード2番目の該当行を探してスタイル更新
+  var rows=document.querySelectorAll(".irow");
+  var fmap={mo:0,af:1,ev:2};
+  var row=rows[fmap[f]];
+  if(row){
+    var bs=row.querySelectorAll(".ibtn");
+    for(var i=0;i<bs.length;i++){
+      var on=i===v;
+      bs[i].style.borderColor=on?ITXT[v]:"transparent";
+      bs[i].style.fontWeight=on?"800":"500";
+    }
+  }
 }
 function tSym(id,btn){
-var idx=cur.sym.indexOf(id);
-if(idx>=0){cur.sym.splice(idx,1);btn.className=“chip”;}
-else{cur.sym.push(id);btn.className=“chip on”;}
+  var idx=cur.sym.indexOf(id);
+  if(idx>=0){cur.sym.splice(idx,1);btn.className="chip";}
+  else{cur.sym.push(id);btn.className="chip on";}
 }
 function tTrg(id,btn){
-var idx=cur.trg.indexOf(id);
-if(idx>=0){cur.trg.splice(idx,1);btn.className=“chip”;}
-else{cur.trg.push(id);btn.className=“chip on”;}
+  var idx=cur.trg.indexOf(id);
+  if(idx>=0){cur.trg.splice(idx,1);btn.className="chip";}
+  else{cur.trg.push(id);btn.className="chip on";}
 }
 function sImp(id){
-cur.imp=(cur.imp===id)?””:id;
-var btns=document.querySelectorAll(”[onclick*=‘sImp’]”);
-for(var i=0;i<btns.length;i++){
-var bid=btns[i].getAttribute(“onclick”).replace(“sImp("”,””).replace(”")”,””);
-var on=bid===cur.imp;
-btns[i].className=“chip”+(on?” onp”:””);
-btns[i].textContent=(on?”\u2713 “:””)+lbl(IMP,bid);
-}
+  cur.imp=(cur.imp===id)?"":id;
+  var btns=document.querySelectorAll("[onclick*='sImp']");
+  for(var i=0;i<btns.length;i++){
+    var bid=btns[i].getAttribute("onclick").replace("sImp(\"","").replace("\")","");
+    var on=bid===cur.imp;
+    btns[i].className="chip"+(on?" onp":"");
+    btns[i].textContent=(on?"\u2713 ":"")+lbl(IMP,bid);
+  }
 }
 function tMed(id,name,btn){
-if(hasMed(id)){
-cur.med=cur.med.filter(function(m){return m.id!==id});
-btn.className=“chip”;btn.textContent=name;
-} else {
-cur.med.push({id:id,tim:[],eff:””});
-btn.className=“chip on”;btn.textContent=”\u2713 “+name;
-}
-document.getElementById(“mc”).innerHTML=buildMC();
+  if(hasMed(id)){
+    cur.med=cur.med.filter(function(m){return m.id!==id});
+    btn.className="chip";btn.textContent=name;
+  } else {
+    cur.med.push({id:id,tim:[],eff:""});
+    btn.className="chip on";btn.textContent="\u2713 "+name;
+  }
+  document.getElementById("mc").innerHTML=buildMC();
 }
 function dMed(id){
-cur.med=cur.med.filter(function(m){return m.id!==id});
-var btns=document.querySelectorAll(”[onclick*=‘tMed("”+id+”"’]”);
-for(var i=0;i<btns.length;i++){
-btns[i].className=“chip”;
-btns[i].textContent=lbl(MED,id);
-}
-document.getElementById(“mc”).innerHTML=buildMC();
+  cur.med=cur.med.filter(function(m){return m.id!==id});
+  var btns=document.querySelectorAll("[onclick*='tMed(\""+id+"\"']");
+  for(var i=0;i<btns.length;i++){
+    btns[i].className="chip";
+    btns[i].textContent=lbl(MED,id);
+  }
+  document.getElementById("mc").innerHTML=buildMC();
 }
 function tTim(mid,tid,btn){
-var m=getMed(mid);if(!m)return;
-var idx=m.tim.indexOf(tid);
-if(idx>=0){m.tim.splice(idx,1);btn.className=“tbtn”;}
-else{m.tim.push(tid);btn.className=“tbtn on”;}
+  var m=getMed(mid);if(!m)return;
+  var idx=m.tim.indexOf(tid);
+  if(idx>=0){m.tim.splice(idx,1);btn.className="tbtn";}
+  else{m.tim.push(tid);btn.className="tbtn on";}
 }
 function sEff(mid,eid){
-var m=getMed(mid);if(!m)return;
-m.eff=(m.eff===eid)?””:eid;
-for(var j=0;j<EFF.length;j++){
-var el=document.getElementById(“eb”+mid+EFF[j][0]);
-if(!el)continue;
-var on=m.eff===EFF[j][0];
-el.style.borderColor=on?EFF[j][2]:”#d1d5db”;
-el.style.background=on?EFF[j][3]:”#fff”;
-el.style.color=on?EFF[j][2]:”#6b7280”;
-el.style.fontWeight=on?“800”:“400”;
-}
+  var m=getMed(mid);if(!m)return;
+  m.eff=(m.eff===eid)?"":eid;
+  for(var j=0;j<EFF.length;j++){
+    var el=document.getElementById("eb"+mid+EFF[j][0]);
+    if(!el)continue;
+    var on=m.eff===EFF[j][0];
+    el.style.borderColor=on?EFF[j][2]:"#d1d5db";
+    el.style.background=on?EFF[j][3]:"#fff";
+    el.style.color=on?EFF[j][2]:"#6b7280";
+    el.style.fontWeight=on?"800":"400";
+  }
 }
 function doSave(){
-DB[sdate]=cp(cur);dbSave();
-var b=document.getElementById(“sbtn”);
-b.textContent=“保存しました！”;b.style.background=“linear-gradient(135deg,#16a34a,#15803d)”;
-setTimeout(function(){b.textContent=“この日の記録を保存”;b.style.background=“linear-gradient(135deg,#4a7c9e,#2d5a78)”},2000);
+  DB[sdate]=cp(cur);dbSave();
+  var b=document.getElementById("sbtn");
+  b.textContent="保存しました！";b.style.background="linear-gradient(135deg,#16a34a,#15803d)";
+  setTimeout(function(){b.textContent="この日の記録を保存";b.style.background="linear-gradient(135deg,#4a7c9e,#2d5a78)"},2000);
 }
 function doExp(){
-var lines=[“頭痛ダイアリー”,””],dates=Object.keys(DB).sort();
-for(var di=0;di<dates.length;di++){
-var d=dates[di],e=DB[d];
-lines.push(“■ “+d);
-lines.push(”  痛み: 朝=”+ILAB[e.mo||0]+” 昼=”+ILAB[e.af||0]+” 夜=”+ILAB[e.ev||0]);
-if(e.sym&&e.sym.length){var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));lines.push(”  症状: “+sl.join(”、”));}
-if(e.med&&e.med.length){
-var ml=[];
-for(var i=0;i<e.med.length;i++){
-var m=e.med[i],p=lbl(MED,m.id);
-if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+=”(”+tl.join(”・”)+”)”;}
-if(m.eff)p+=” → “+lbl(EFF,m.eff);
-ml.push(p);
-}
-lines.push(”  服薬: “+ml.join(” / “));
-}
-if(e.trg&&e.trg.length){var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));lines.push(”  誘因: “+tl.join(”、”));}
-if(e.imp)lines.push(”  影響: “+lbl(IMP,e.imp));
-if(e.memo)lines.push(”  メモ: “+e.memo);
-lines.push(””);
-}
-var blob=new Blob([lines.join(”\n”)],{type:“text/plain;charset=utf-8”});
-var url=URL.createObjectURL(blob);
-var a=document.createElement(“a”);a.href=url;a.download=“headache_diary.txt”;a.click();
-URL.revokeObjectURL(url);
+  var lines=["頭痛ダイアリー",""],dates=Object.keys(DB).sort();
+  for(var di=0;di<dates.length;di++){
+    var d=dates[di],e=DB[d];
+    lines.push("■ "+d);
+    lines.push("  痛み: 朝="+ILAB[e.mo||0]+" 昼="+ILAB[e.af||0]+" 夜="+ILAB[e.ev||0]);
+    if(e.sym&&e.sym.length){var sl=[];for(var i=0;i<e.sym.length;i++)sl.push(lbl(SYM,e.sym[i]));lines.push("  症状: "+sl.join("、"));}
+    if(e.med&&e.med.length){
+      var ml=[];
+      for(var i=0;i<e.med.length;i++){
+        var m=e.med[i],p=lbl(MED,m.id);
+        if(m.tim&&m.tim.length){var tl=[];for(var j=0;j<m.tim.length;j++)tl.push(lbl(TIM,m.tim[j]));p+="("+tl.join("・")+")";}
+        if(m.eff)p+=" → "+lbl(EFF,m.eff);
+        ml.push(p);
+      }
+      lines.push("  服薬: "+ml.join(" / "));
+    }
+    if(e.trg&&e.trg.length){var tl=[];for(var i=0;i<e.trg.length;i++)tl.push(lbl(TRG,e.trg[i]));lines.push("  誘因: "+tl.join("、"));}
+    if(e.imp)lines.push("  影響: "+lbl(IMP,e.imp));
+    if(e.memo)lines.push("  メモ: "+e.memo);
+    lines.push("");
+  }
+  var blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");a.href=url;a.download="headache_diary.txt";a.click();
+  URL.revokeObjectURL(url);
 }
 function goTab(n){
-ctab=n;
-document.getElementById(“t0”).className=“tab”+(n===0?” on”:””);
-document.getElementById(“t1”).className=“tab”+(n===1?” on”:””);
-render();
+  ctab=n;
+  document.getElementById("t0").className="tab"+(n===0?" on":"");
+  document.getElementById("t1").className="tab"+(n===1?" on":"");
+  render();
 }
 
 // 起動
-try{render();}catch(e){document.getElementById(“pg”).innerHTML=”<div style='padding:20px;color:red'>エラー: “+e.message+”</div>”;}
+try{render();}catch(e){document.getElementById("pg").innerHTML="<div style='padding:20px;color:red'>エラー: "+e.message+"</div>";}
 </script>
-
 </body>
 </html>
